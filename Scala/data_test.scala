@@ -10,5 +10,7 @@ val spark = SparkSession.builder().getOrCreate()
 
 // Create a DataFrame from Spark Session read csv
 // Technically known as class Dataset
+
 val df = spark.read.option("header","true").option("inferSchema","true").csv("data_rand.csv")
 df.head(6)
+df.printSchema()
