@@ -149,7 +149,7 @@ time("Merge 10 Columns in 2",df.withColumn("words0m9",concat(
 https://www.mien.in/2018/03/25/reshaping-dataframe-using-pivot-and-melt-in-apache-spark-and-pandas/
 */
 
-/** Picot **/
+/** Pivot **/
 time("Pivot 1 Rows and 1 Column",df.groupBy("group0").pivot("group10").sum("float0").count())
 time("Pivot 5 Rows and 1 Column",{
   df.groupBy("group0","group1","group2","group3","group4","group5")
