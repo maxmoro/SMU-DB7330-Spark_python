@@ -102,7 +102,7 @@ time("Mathematical Operations 5 Columns",{
     .withColumn("float2_0",tan(df("float2")))
     .withColumn("float3_0",sin(df("float3")))
     .withColumn("float4_0",cos(df("float4")))
-    .agg(sum("float0_0"),sum("float1_0"),sum("float2_0"),sum("float3_0"),sum("float4_0"))
+    /*.agg(sum("float0_0"),sum("float1_0"),sum("float2_0"),sum("float3_0"),sum("float4_0"))*/
     .show()
     /*aggregation done to make sure Spark will calculate the new columns*/
 })
@@ -117,8 +117,9 @@ time("Mathematical Operations 10 Columns",{
     .withColumn("float7_0",log(tan(df("float7"))))
     .withColumn("float8_0",log(sin(df("float7"))))
     .withColumn("float9_0",log(cos(df("float7"))))
-    .agg(sum("float0_0"),sum("float1_0"),sum("float2_0"),sum("float3_0"),sum("float4_0")
+    /*.agg(sum("float0_0"),sum("float1_0"),sum("float2_0"),sum("float3_0"),sum("float4_0")
         ,sum("float5_0"),sum("float6_0"),sum("float7_0"),sum("float8_0"),sum("float9_0"))
+        */
     .show()
     /*aggregation done to make sure Spark will calculate the new columns*/
 })
