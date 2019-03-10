@@ -154,12 +154,12 @@ time("Pivot 1 Rows and 1 Column",df.groupBy("group0").pivot("group10").sum("floa
 time("Pivot 5 Rows and 1 Column",{
   df.groupBy("group0","group1","group2","group3","group4","group5")
   .pivot("group11")
-  .sum("float0")
+  .sum("float1")
   .count()
 })
 time("Pivot 10 Rows and 1 Columns",{
   df.groupBy("group0","group1","group2","group3","group4","group5","group6","group7","group8","group9")
   .pivot("group12")
-  .sum("float0")
+  .sum("float2")
   .count()
 })
