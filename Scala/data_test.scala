@@ -35,7 +35,7 @@ spark.read.csv(SparkFiles.get("file.csv"))
 */
 scala.tools.nsc.io.File("time_log.csv").delete()
 
-val df = spark.read.option("header","true").option("inferSchema","true").csv("data_rand.csv")
+val df = spark.read.option("header","true").option("inferSchema","true").csv("../DataGenerator/Data/data_rand.csv")
 val df2 = df.limit(df.count().toInt/2) /*df2 is needed for join operations, we use half of df to allow some outer join*/
 
 println("testing Time 1000ms")
