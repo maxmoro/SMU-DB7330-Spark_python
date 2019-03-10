@@ -1,0 +1,27 @@
+test 1sec,1001
+Sorting Ascending 1 column,2674
+Sorting Ascending 5 columns,2892
+Sorting Ascending 10 columns,3126
+Sorting Descending 1 column,2580
+Sorting Descending 5 columns,2541
+Sorting Descending 10 columns,2612
+Inner Join 1 column,418
+Inner Join 5 columns,475
+Inner Join 10 columns,438
+Left Outer Join 1 column,334
+Left Outer Join 5 columns,377
+Left Outer Join 10 columns,417
+Full Outer Join 1 column,1491
+Full Outer Join 5 columns,2959
+Full Outer Join 10 columns,2842
+Split 1 Column in 5,173
+Split 1 Column in 10,307
+Mathematical Operations 1 Column,149
+Mathematical Operations 5 Columns,218
+Mathematical Operations 10 Columns,223
+Merge 2 Columns in 1,117
+Merge 5 Columns in 2,129
+Merge 10 Columns in 2,130
+Pivot 1 Rows and 1 Column,3453
+Pivot 5 Rows and 1 Column,17439
+Pivot 10 Rows and 1 Columns,17669
