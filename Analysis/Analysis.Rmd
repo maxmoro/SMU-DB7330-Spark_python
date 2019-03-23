@@ -10,7 +10,31 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-
-
+library(tidyverse)
 
 ```
+
+```{r}
+file1 = read.csv("../Results/Databricks/machine2/PySpark_dataset_10MB_20190323_1900.csv")
+file2 = read.csv("../Results/Databricks/machine2/PySpark_dataset_100MB_20190323_1935.csv")
+
+column.names = c("Language","Randomize","Dataset","MachineID","RunID","Type","Operation","TimeTaken")
+
+colnames(file1) = column.names
+colnames(file2) = column.names  
+ 
+merged_data = rbind(file1,file2)
+# str(file1)
+# str(file2)
+# str(merged_data)
+
+summary(merged_data)
+```
+
+```{r}
+merged_data %>% 
+  filter(RunID != 1) %>%
+  group_by(Type, Operation, Language, MachineID, Dataset) %>%
+  summarise(n = n(), Mean = mean(TimeTaken), Std_dev= sd(TimeTaken), Coeff_Var = Mean/Std_dev)
+```
+
