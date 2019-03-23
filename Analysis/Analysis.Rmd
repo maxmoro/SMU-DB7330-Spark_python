@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(tidyverse)
+library(DT)
 
 ```
 
@@ -32,9 +33,34 @@ summary(merged_data)
 ```
 
 ```{r}
-merged_data %>% 
-  filter(RunID != 1) %>%
-  group_by(Type, Operation, Language, MachineID, Dataset) %>%
-  summarise(n = n(), Mean = mean(TimeTaken), Std_dev= sd(TimeTaken), Coeff_Var = Mean/Std_dev)
+size_10MB = file.size("../../Data/Databricks/machine2/dataset_10MB.csv")/(1024*1024)
+size_100MB = file.size("../../Data/Databricks/machine2/dataset_100MB.csv")/(1024*1024)
+
+size_info = data.frame(Dataset = c("dataset_10MB","dataset_100MB"), Size = c(size_10MB,size_100MB))
+str(size_info)
 ```
 
+```{r}
+merged_data = merged_data %>%
+  merge(size_info) %>%
+  mutate(Throughput = TimeTaken/Size)
+```
+
+```{r}
+result = merged_data %>% 
+  filter(RunID != 1) %>%
+  group_by(Type, Operation, Language, MachineID, Dataset) %>%
+  summarise(n = n()
+            ,Mean_Time = mean(TimeTaken)
+            ,Std_Dev_Time= sd(TimeTaken)
+            ,Coeff_Var_Time = Mean_Time/Std_Dev_Time
+            ,Mean_Throughput = mean(Throughput)
+            ,Std_Dev_Throughput= sd(Throughput)
+            ,Coeff_Var_Throughput = Mean_Throughput/Std_Dev_Throughput
+            )
+
+DT::datatable(result)
+```
+
+# Observations
+* Throughout (Time/MB) does not remian constant. It decreases with larger datasets
