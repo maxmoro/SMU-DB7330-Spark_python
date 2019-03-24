@@ -16,51 +16,88 @@ library(DT)
 ```
 
 ```{r}
-file1 = read.csv("../Results/Databricks/machine2/PySpark_dataset_10MB_20190323_1900.csv")
-file2 = read.csv("../Results/Databricks/machine2/PySpark_dataset_100MB_20190323_1935.csv")
 
+read.clean.files = function(filename){
+  file = read.csv(filename, header = FALSE)
+  column.names = c("Language","Randomize","Dataset","MachineID","RunID","Type","Operation","TimeTaken")
+  colnames(file) = column.names
+  return(file)
+}
+
+files = list.files(path = "../Results/", pattern = ".csv$", recursive = TRUE, full.names = TRUE) # List all .csv files
+rows = lapply(files, read.csv, header = FALSE) # Read the files into list
+merged_data = do.call(rbind, rows) # combine the data.frame
 column.names = c("Language","Randomize","Dataset","MachineID","RunID","Type","Operation","TimeTaken")
-
-colnames(file1) = column.names
-colnames(file2) = column.names  
- 
-merged_data = rbind(file1,file2)
-# str(file1)
-# str(file2)
-# str(merged_data)
-
+colnames(merged_data) = column.names
+merged_data$Type = as.factor(gsub(pattern = "Operations", replacement = "Operation", x = merged_data$Type))
+head(merged_data)
 summary(merged_data)
 ```
 
 ```{r}
-size_10MB = file.size("../../Data/Databricks/machine2/dataset_10MB.csv")/(1024*1024)
-size_100MB = file.size("../../Data/Databricks/machine2/dataset_100MB.csv")/(1024*1024)
+size_10MB = file.size("../../Data/Databricks/machine2/dataset_10MB.csv")/(1024*1024) # 11.4789848327637
+size_100MB = file.size("../../Data/Databricks/machine2/dataset_100MB.csv")/(1024*1024) # 115.640992164612
+size_500MB = file.size("../../Data/Databricks/machine2/dataset_500MB.csv")/(1024*1024) # 576.678165435791
 
-size_info = data.frame(Dataset = c("dataset_10MB","dataset_100MB"), Size = c(size_10MB,size_100MB))
+print(paste("Acrual Size of 10MB file (in MB)",size_10MB))
+print(paste("Acrual Size of 100MB file (in MB)",size_100MB))
+print(paste("Acrual Size of 500MB file (in MB)",size_500MB))
+
+size_info = data.frame(Dataset = c("dataset_10MB","dataset_100MB","dataset_500MB")
+                       ,Size = c(size_10MB,size_100MB,size_500MB))
 str(size_info)
 ```
 
 ```{r}
 merged_data = merged_data %>%
   merge(size_info) %>%
-  mutate(Throughput = TimeTaken/Size)
+  mutate(Throughput = Size/TimeTaken)
 ```
 
-```{r}
-result = merged_data %>% 
-  filter(RunID != 1) %>%
-  group_by(Type, Operation, Language, MachineID, Dataset) %>%
-  summarise(n = n()
-            ,Mean_Time = mean(TimeTaken)
-            ,Std_Dev_Time= sd(TimeTaken)
-            ,Coeff_Var_Time = Mean_Time/Std_Dev_Time
-            ,Mean_Throughput = mean(Throughput)
-            ,Std_Dev_Throughput= sd(Throughput)
-            ,Coeff_Var_Throughput = Mean_Throughput/Std_Dev_Throughput
-            )
 
+```{r}
+summarize_results = function(grouped_data){
+  rv = grouped_data %>%
+    summarise(n = n()
+            ,Mean_Time = round(mean(TimeTaken),2)
+            ,Std_Dev_Time= round(sd(TimeTaken),2)
+            ,Coeff_Var_Time = round(Mean_Time/Std_Dev_Time,2)
+            ,Mean_Throughput = round(mean(Throughput),2)
+            ,Std_Dev_Throughput= round(sd(Throughput),2)
+            ,Coeff_Var_Throughput = round(Mean_Throughput/Std_Dev_Throughput,2)
+            )
+  return(rv)  
+}
+```
+
+
+```{r}
+# Comparison between dataset sizes
+group = merged_data %>% 
+  filter(RunID != 1) %>%
+  group_by(Type, Operation, Language, MachineID, Dataset)
+  
+result = summarize_results(group)
 DT::datatable(result)
 ```
 
 # Observations
-* Throughout (Time/MB) does not remian constant. It decreases with larger datasets
+* Throughout (MB/Time) does not remian constant. 
+* For column operations, it increased from 10MB to 100MB, but decreases from 100MB to 500MB implying that there is a sweet spot.
+
+```{r}
+# Comparison between Scala and PySpark
+group = merged_data %>% 
+  filter(RunID != 1) %>%
+  group_by(Type, Operation, Dataset, MachineID, Language)
+  
+result = summarize_results(group)
+DT::datatable(result)
+```
+
+
+
+```{r}
+
+
+```
