@@ -99,7 +99,15 @@ result = summarize_results(group)
 DT::datatable(result)
 ```
 
-
+```{r}
+# Comparison between Machine 1 and Machine 2
+group = merged_data %>% 
+  filter(RunID != 1) %>%
+  group_by(Type, Operation, Language, Dataset, MachineID)
+  
+result = summarize_results(group)
+DT::datatable(result)
+```
 
 ```{r}
 
