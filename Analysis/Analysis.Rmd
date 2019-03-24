@@ -35,16 +35,20 @@ summary(merged_data)
 ```
 
 ```{r}
-size_10MB = file.size("../../Data/Databricks/machine2/dataset_10MB.csv")/(1024*1024) # 11.4789848327637
-size_100MB = file.size("../../Data/Databricks/machine2/dataset_100MB.csv")/(1024*1024) # 115.640992164612
-size_500MB = file.size("../../Data/Databricks/machine2/dataset_500MB.csv")/(1024*1024) # 576.678165435791
+size_10MB =  11.4789848327637 # file.size("../../Data/Databricks/machine2/dataset_10MB.csv")/(1024*1024)
+size_100MB = 115.640992164612 # file.size("../../Data/Databricks/machine2/dataset_100MB.csv")/(1024*1024) 
+size_200MB = 229.8573  
+size_300MB = 343.2709
+size_500MB = 576.678165435791 # file.size("../../Data/Databricks/machine2/dataset_500MB.csv")/(1024*1024) 
 
-print(paste("Acrual Size of 10MB file (in MB)",size_10MB))
-print(paste("Acrual Size of 100MB file (in MB)",size_100MB))
-print(paste("Acrual Size of 500MB file (in MB)",size_500MB))
+print(paste("Actual Size of 10MB file (in MB)",size_10MB))
+print(paste("Actual Size of 100MB file (in MB)",size_100MB))
+print(paste("Actual Size of 200MB file (in MB)",size_200MB))
+print(paste("Actual Size of 300MB file (in MB)",size_300MB))
+print(paste("Actual Size of 500MB file (in MB)",size_500MB))
 
-size_info = data.frame(Dataset = c("dataset_10MB","dataset_100MB","dataset_500MB")
-                       ,Size = c(size_10MB,size_100MB,size_500MB))
+size_info = data.frame(Dataset = c("dataset_10MB","dataset_100MB","dataset_200MB","dataset_300MB","dataset_500MB")
+                       ,Size = c(size_10MB,size_100MB,size_200MB,size_300MB,size_500MB))
 str(size_info)
 ```
 
