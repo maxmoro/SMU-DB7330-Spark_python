@@ -1,0 +1,162 @@
+Scala,1,dataset_300MB,1,1,Column Operation, Mathematical Operations on Columns,2.961
+Scala,1,dataset_300MB,1,1,Column Operation, Sorting Asc 10 column,28.926
+Scala,1,dataset_300MB,1,1,Column Operation, Merge 10 columns into 1,14.148
+Scala,1,dataset_300MB,1,1,Column Operation, Split 1 Column into 5,32.555
+Scala,1,dataset_300MB,1,1,Column Operation, Sorting Desc 10 column,40.293
+Scala,1,dataset_300MB,1,1,Row Operation, Filter Reg Ex 1,12.099
+Scala,1,dataset_300MB,1,1,Column Operation, Sorting Desc 1 column,38.755
+Scala,1,dataset_300MB,1,1,Column Operation, Sorting Asc 1 column,37.709
+Scala,1,dataset_300MB,1,1,Aggregate Operations, GroupBy 1 column,67.833
+Scala,1,dataset_300MB,1,1,Column Operation, Split 1 Column into 10,30.457
+Scala,1,dataset_300MB,1,1,Row Operation, Shift (Lag),6.618
+Scala,1,dataset_300MB,1,1,Mixed Operation, Pivot 1 Rows and 1 Column,17.63
+Scala,1,dataset_300MB,1,1,Aggregate Operations, GroupBy 10 columns,142.136
+Scala,1,dataset_300MB,1,1,Column Operation, Sorting Desc 5 column,40.9
+Scala,1,dataset_300MB,1,1,Aggregate Operations, GroupBy 5 columns,130.006
+Scala,1,dataset_300MB,1,1,Row Operation, Filter Reg Ex 2,13.904
+Scala,1,dataset_300MB,1,1,Column Operation, Merge 5 columns into 1,40.217
+Scala,1,dataset_300MB,1,1,Row Operation, Filter,23.262
+Scala,1,dataset_300MB,1,1,Aggregate Operations, Ranking by Group,70.634
+Scala,1,dataset_300MB,1,1,Row Operation, Writing 100 new rows,24.828
+Scala,1,dataset_300MB,1,1,Mixed Operation, Pivot 5 Rows and 1 Column,34.232
+Scala,1,dataset_300MB,1,1,Column Operation, Merge 2 columns into 1,26.31
+Scala,1,dataset_300MB,1,1,Row Operation, Writing 1000 new rows,18.778
+Scala,1,dataset_300MB,1,1,Column Operation, Sorting Asc 5 column,52.952
+Scala,1,dataset_300MB,1,1,Mixed Operation, Pivot 10 Rows and 1 Column,33.496
+Scala,1,dataset_300MB,1,1,Row Operation, Writing 10000 new rows,21.375
+Scala,1,dataset_300MB,1,1,Row Operation, Running Sum,7.254
+Scala,1,dataset_300MB,1,2,Row Operation, Writing 1000 new rows,17.965
+Scala,1,dataset_300MB,1,2,Column Operation, Sorting Asc 1 column,34.209
+Scala,1,dataset_300MB,1,2,Mixed Operation, Pivot 10 Rows and 1 Column,30.685
+Scala,1,dataset_300MB,1,2,Aggregate Operations, GroupBy 10 columns,151.193
+Scala,1,dataset_300MB,1,2,Column Operation, Split 1 Column into 10,41.794
+Scala,1,dataset_300MB,1,2,Aggregate Operations, GroupBy 5 columns,64.918
+Scala,1,dataset_300MB,1,2,Column Operation, Sorting Desc 5 column,18.813
+Scala,1,dataset_300MB,1,2,Row Operation, Filter Reg Ex 2,9.711
+Scala,1,dataset_300MB,1,2,Column Operation, Split 1 Column into 5,21.048
+Scala,1,dataset_300MB,1,2,Column Operation, Sorting Asc 10 column,39.253
+Scala,1,dataset_300MB,1,2,Aggregate Operations, Ranking by Group,30.36
+Scala,1,dataset_300MB,1,2,Row Operation, Running Sum,7.306
+Scala,1,dataset_300MB,1,2,Column Operation, Sorting Desc 1 column,38.239
+Scala,1,dataset_300MB,1,2,Column Operation, Merge 2 columns into 1,18.607
+Scala,1,dataset_300MB,1,2,Row Operation, Writing 10000 new rows,17.064
+Scala,1,dataset_300MB,1,2,Column Operation, Sorting Desc 10 column,36.681
+Scala,1,dataset_300MB,1,2,Row Operation, Writing 100 new rows,16.154
+Scala,1,dataset_300MB,1,2,Column Operation, Merge 5 columns into 1,17.606
+Scala,1,dataset_300MB,1,2,Mixed Operation, Pivot 1 Rows and 1 Column,12.681
+Scala,1,dataset_300MB,1,2,Column Operation, Mathematical Operations on Columns,5.451
+Scala,1,dataset_300MB,1,2,Aggregate Operations, GroupBy 1 column,51.99
+Scala,1,dataset_300MB,1,2,Row Operation, Filter,10.099
+Scala,1,dataset_300MB,1,2,Row Operation, Shift (Lag),3.328
+Scala,1,dataset_300MB,1,2,Column Operation, Sorting Asc 5 column,30.208
+Scala,1,dataset_300MB,1,2,Column Operation, Merge 10 columns into 1,18.074
+Scala,1,dataset_300MB,1,2,Row Operation, Filter Reg Ex 1,9.63
+Scala,1,dataset_300MB,1,2,Mixed Operation, Pivot 5 Rows and 1 Column,15.226
+Scala,1,dataset_300MB,1,3,Aggregate Operations, Ranking by Group,25.272
+Scala,1,dataset_300MB,1,3,Column Operation, Split 1 Column into 10,28.344
+Scala,1,dataset_300MB,1,3,Row Operation, Filter,13.67
+Scala,1,dataset_300MB,1,3,Mixed Operation, Pivot 10 Rows and 1 Column,25.417
+Scala,1,dataset_300MB,1,3,Column Operation, Sorting Asc 10 column,44.569
+Scala,1,dataset_300MB,1,3,Column Operation, Sorting Asc 5 column,84.55
+Scala,1,dataset_300MB,1,3,Row Operation, Running Sum,7.549
+Scala,1,dataset_300MB,1,3,Aggregate Operations, GroupBy 10 columns,163.003
+Scala,1,dataset_300MB,1,3,Row Operation, Shift (Lag),4.598
+Scala,1,dataset_300MB,1,3,Column Operation, Mathematical Operations on Columns,5.842
+Scala,1,dataset_300MB,1,3,Mixed Operation, Pivot 1 Rows and 1 Column,10.27
+Scala,1,dataset_300MB,1,3,Row Operation, Filter Reg Ex 2,14.269
+Scala,1,dataset_300MB,1,3,Column Operation, Sorting Desc 1 column,60.11
+Scala,1,dataset_300MB,1,3,Row Operation, Writing 100 new rows,49.982
+Scala,1,dataset_300MB,1,3,Row Operation, Writing 10000 new rows,14.774
+Scala,1,dataset_300MB,1,3,Column Operation, Merge 5 columns into 1,14.394
+Scala,1,dataset_300MB,1,3,Row Operation, Filter Reg Ex 1,4.879
+Scala,1,dataset_300MB,1,3,Column Operation, Split 1 Column into 5,18.725
+Scala,1,dataset_300MB,1,3,Mixed Operation, Pivot 5 Rows and 1 Column,13.682
+Scala,1,dataset_300MB,1,3,Column Operation, Merge 2 columns into 1,9.102
+Scala,1,dataset_300MB,1,3,Column Operation, Sorting Desc 5 column,15.816
+Scala,1,dataset_300MB,1,3,Aggregate Operations, GroupBy 5 columns,66.666
+Scala,1,dataset_300MB,1,3,Column Operation, Merge 10 columns into 1,11.147
+Scala,1,dataset_300MB,1,3,Aggregate Operations, GroupBy 1 column,67.721
+Scala,1,dataset_300MB,1,3,Row Operation, Writing 1000 new rows,18.687
+Scala,1,dataset_300MB,1,3,Column Operation, Sorting Desc 10 column,54.83
+Scala,1,dataset_300MB,1,3,Column Operation, Sorting Asc 1 column,55.119
+Scala,1,dataset_300MB,1,4,Row Operation, Filter Reg Ex 2,32.112
+Scala,1,dataset_300MB,1,4,Column Operation, Sorting Desc 10 column,38.54
+Scala,1,dataset_300MB,1,4,Aggregate Operations, GroupBy 10 columns,136.917
+Scala,1,dataset_300MB,1,4,Column Operation, Sorting Asc 1 column,42.588
+Scala,1,dataset_300MB,1,4,Row Operation, Writing 100 new rows,99.403
+Scala,1,dataset_300MB,1,4,Mixed Operation, Pivot 1 Rows and 1 Column,29.516
+Scala,1,dataset_300MB,1,4,Column Operation, Mathematical Operations on Columns,2.232
+Scala,1,dataset_300MB,1,4,Column Operation, Split 1 Column into 10,29.021
+Scala,1,dataset_300MB,1,4,Column Operation, Sorting Desc 1 column,14.271
+Scala,1,dataset_300MB,1,4,Row Operation, Filter,6.634
+Scala,1,dataset_300MB,1,4,Mixed Operation, Pivot 5 Rows and 1 Column,11.682
+Scala,1,dataset_300MB,1,4,Row Operation, Shift (Lag),1.758
+Scala,1,dataset_300MB,1,4,Row Operation, Running Sum,2.042
+Scala,1,dataset_300MB,1,4,Column Operation, Merge 5 columns into 1,11.434
+Scala,1,dataset_300MB,1,4,Row Operation, Writing 10000 new rows,12.789
+Scala,1,dataset_300MB,1,4,Row Operation, Writing 1000 new rows,15.257
+Scala,1,dataset_300MB,1,4,Column Operation, Merge 10 columns into 1,19.515
+Scala,1,dataset_300MB,1,4,Row Operation, Filter Reg Ex 1,11.495
+Scala,1,dataset_300MB,1,4,Aggregate Operations, GroupBy 1 column,63.884
+Scala,1,dataset_300MB,1,4,Column Operation, Sorting Asc 5 column,41.165
+Scala,1,dataset_300MB,1,4,Aggregate Operations, Ranking by Group,43.493
+Scala,1,dataset_300MB,1,4,Column Operation, Split 1 Column into 5,21.604
+Scala,1,dataset_300MB,1,4,Column Operation, Merge 2 columns into 1,27.998
+Scala,1,dataset_300MB,1,4,Column Operation, Sorting Desc 5 column,59.86
+Scala,1,dataset_300MB,1,4,Aggregate Operations, GroupBy 5 columns,119.102
+Scala,1,dataset_300MB,1,4,Column Operation, Sorting Asc 10 column,55.61
+Scala,1,dataset_300MB,1,4,Mixed Operation, Pivot 10 Rows and 1 Column,69.323
+Scala,1,dataset_300MB,1,5,Mixed Operation, Pivot 10 Rows and 1 Column,27.794
+Scala,1,dataset_300MB,1,5,Row Operation, Filter,31.477
+Scala,1,dataset_300MB,1,5,Row Operation, Shift (Lag),8.782
+Scala,1,dataset_300MB,1,5,Row Operation, Writing 10000 new rows,23.12
+Scala,1,dataset_300MB,1,5,Aggregate Operations, GroupBy 1 column,82.505
+Scala,1,dataset_300MB,1,5,Column Operation, Merge 2 columns into 1,35.363
+Scala,1,dataset_300MB,1,5,Column Operation, Merge 10 columns into 1,29.731
+Scala,1,dataset_300MB,1,5,Column Operation, Sorting Desc 1 column,51.671
+Scala,1,dataset_300MB,1,5,Aggregate Operations, Ranking by Group,54.076
+Scala,1,dataset_300MB,1,5,Column Operation, Split 1 Column into 10,67.692
+Scala,1,dataset_300MB,1,5,Row Operation, Writing 100 new rows,16.936
+Scala,1,dataset_300MB,1,5,Aggregate Operations, GroupBy 5 columns,109.052
+Scala,1,dataset_300MB,1,5,Column Operation, Sorting Asc 5 column,85.685
+Scala,1,dataset_300MB,1,5,Row Operation, Writing 1000 new rows,62.357
+Scala,1,dataset_300MB,1,5,Aggregate Operations, GroupBy 10 columns,157.442
+Scala,1,dataset_300MB,1,5,Column Operation, Sorting Asc 10 column,62.022
+Scala,1,dataset_300MB,1,5,Column Operation, Mathematical Operations on Columns,21.988
+Scala,1,dataset_300MB,1,5,Mixed Operation, Pivot 5 Rows and 1 Column,50.866
+Scala,1,dataset_300MB,1,5,Column Operation, Sorting Desc 10 column,64.81
+Scala,1,dataset_300MB,1,5,Row Operation, Filter Reg Ex 1,13.639
+Scala,1,dataset_300MB,1,5,Row Operation, Filter Reg Ex 2,11.795
+Scala,1,dataset_300MB,1,5,Column Operation, Sorting Asc 1 column,56.361
+Scala,1,dataset_300MB,1,5,Row Operation, Running Sum,6.862
+Scala,1,dataset_300MB,1,5,Column Operation, Merge 5 columns into 1,33.223
+Scala,1,dataset_300MB,1,5,Column Operation, Split 1 Column into 5,23.517
+Scala,1,dataset_300MB,1,5,Column Operation, Sorting Desc 5 column,19.386
+Scala,1,dataset_300MB,1,5,Mixed Operation, Pivot 1 Rows and 1 Column,5.621
+Scala,1,dataset_300MB,1,6,Row Operation, Filter Reg Ex 2,3.428
+Scala,1,dataset_300MB,1,6,Column Operation, Mathematical Operations on Columns,1.441
+Scala,1,dataset_300MB,1,6,Row Operation, Writing 10000 new rows,7.344
+Scala,1,dataset_300MB,1,6,Column Operation, Sorting Desc 10 column,23.032
+Scala,1,dataset_300MB,1,6,Column Operation, Merge 10 columns into 1,14.537
+Scala,1,dataset_300MB,1,6,Row Operation, Writing 100 new rows,7.365
+Scala,1,dataset_300MB,1,6,Mixed Operation, Pivot 5 Rows and 1 Column,12.518
+Scala,1,dataset_300MB,1,6,Column Operation, Merge 2 columns into 1,12.417
+Scala,1,dataset_300MB,1,6,Column Operation, Split 1 Column into 10,22.488
+Scala,1,dataset_300MB,1,6,Row Operation, Filter,16.553
+Scala,1,dataset_300MB,1,6,Column Operation, Sorting Desc 1 column,57.723
+Scala,1,dataset_300MB,1,6,Row Operation, Running Sum,9.378
+Scala,1,dataset_300MB,1,6,Row Operation, Filter Reg Ex 1,20.037
+Scala,1,dataset_300MB,1,6,Column Operation, Sorting Asc 1 column,47.275
+Scala,1,dataset_300MB,1,6,Column Operation, Sorting Asc 10 column,40.104
+Scala,1,dataset_300MB,1,6,Column Operation, Merge 5 columns into 1,23.494
+Scala,1,dataset_300MB,1,6,Aggregate Operations, GroupBy 5 columns,122.525
+Scala,1,dataset_300MB,1,6,Aggregate Operations, Ranking by Group,52.309
+Scala,1,dataset_300MB,1,6,Row Operation, Shift (Lag),4.868
+Scala,1,dataset_300MB,1,6,Column Operation, Sorting Desc 5 column,63.181
+Scala,1,dataset_300MB,1,6,Row Operation, Writing 1000 new rows,62.688
+Scala,1,dataset_300MB,1,6,Mixed Operation, Pivot 10 Rows and 1 Column,55.101
+Scala,1,dataset_300MB,1,6,Mixed Operation, Pivot 1 Rows and 1 Column,11.772
+Scala,1,dataset_300MB,1,6,Column Operation, Sorting Asc 5 column,58.979
+Scala,1,dataset_300MB,1,6,Column Operation, Split 1 Column into 5,29.792
+Scala,1,dataset_300MB,1,6,Aggregate Operations, GroupBy 1 column,78.281
+Scala,1,dataset_300MB,1,6,Aggregate Operations, GroupBy 10 columns,157.872
