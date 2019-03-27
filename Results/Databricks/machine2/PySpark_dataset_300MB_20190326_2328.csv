@@ -1,0 +1,163 @@
+
+PySpark,1,dataset_300MB,2,1,Row Operation, Filter,6.7250576019
+PySpark,1,dataset_300MB,2,1,Column Operation, Split 1 Column into 5,30.8935830593
+PySpark,1,dataset_300MB,2,1,Row Operation, Running Sum,42.7302658558
+PySpark,1,dataset_300MB,2,1,Column Operation, Merge 5 columns into 1,19.237704277
+PySpark,1,dataset_300MB,2,1,Row Operation, Writing 100 new rows,24.8986618519
+PySpark,1,dataset_300MB,2,1,Mixed Operation, Pivot 1 Rows and 1 Column,7.0075528622
+PySpark,1,dataset_300MB,2,1,Aggregate Operation, GroupBy 5 columns,42.3183352947
+PySpark,1,dataset_300MB,2,1,Column Operation, Sorting Desc 5 column,118.8219184875
+PySpark,1,dataset_300MB,2,1,Column Operation, Merge 10 columns into 1,28.4186816216
+PySpark,1,dataset_300MB,2,1,Mixed Operation, Pivot 10 Rows and 1 Column,21.2109708786
+PySpark,1,dataset_300MB,2,1,Row Operation, Writing 10000 new rows,27.0033435822
+PySpark,1,dataset_300MB,2,1,Column Operation, Sorting Asc 10 column,93.2230021954
+PySpark,1,dataset_300MB,2,1,Row Operation, Writing 1000 new rows,19.5473980904
+PySpark,1,dataset_300MB,2,1,Row Operation, Filter Reg Ex 1,3.7009401321
+PySpark,1,dataset_300MB,2,1,Column Operation, Sorting Asc 1 column,59.947457552
+PySpark,1,dataset_300MB,2,1,Column Operation, Mathematical Operation on Columns,2.4379565716
+PySpark,1,dataset_300MB,2,1,Row Operation, Filter Reg Ex 2,5.0489161015
+PySpark,1,dataset_300MB,2,1,Column Operation, Merge 2 columns into 1,18.8968942165
+PySpark,1,dataset_300MB,2,1,Row Operation, Shift (Lag),31.472260952
+PySpark,1,dataset_300MB,2,1,Aggregate Operation, GroupBy 10 columns,69.9880876541
+PySpark,1,dataset_300MB,2,1,Column Operation, Sorting Desc 10 column,102.3464941978
+PySpark,1,dataset_300MB,2,1,Aggregate Operation, Ranking by Group,29.1479656696
+PySpark,1,dataset_300MB,2,1,Column Operation, Split 1 Column into 10,26.8695783615
+PySpark,1,dataset_300MB,2,1,Column Operation, Sorting Desc 1 column,84.5800476074
+PySpark,1,dataset_300MB,2,1,Mixed Operation, Pivot 5 Rows and 1 Column,14.3304414749
+PySpark,1,dataset_300MB,2,1,Aggregate Operation, GroupBy 1 column,28.0472812653
+PySpark,1,dataset_300MB,2,1,Column Operation, Sorting Asc 5 column,115.5770304203
+PySpark,1,dataset_300MB,2,2,Row Operation, Running Sum,30.4121870995
+PySpark,1,dataset_300MB,2,2,Mixed Operation, Pivot 10 Rows and 1 Column,19.1782269478
+PySpark,1,dataset_300MB,2,2,Mixed Operation, Pivot 5 Rows and 1 Column,15.6238973141
+PySpark,1,dataset_300MB,2,2,Column Operation, Sorting Desc 5 column,98.4562559128
+PySpark,1,dataset_300MB,2,2,Mixed Operation, Pivot 1 Rows and 1 Column,6.7786371708
+PySpark,1,dataset_300MB,2,2,Column Operation, Sorting Asc 10 column,89.814852953
+PySpark,1,dataset_300MB,2,2,Column Operation, Split 1 Column into 10,28.3767812252
+PySpark,1,dataset_300MB,2,2,Aggregate Operation, GroupBy 10 columns,74.4422459602
+PySpark,1,dataset_300MB,2,2,Column Operation, Sorting Desc 1 column,120.7927103043
+PySpark,1,dataset_300MB,2,2,Aggregate Operation, Ranking by Group,29.6775081158
+PySpark,1,dataset_300MB,2,2,Row Operation, Shift (Lag),35.633374691
+PySpark,1,dataset_300MB,2,2,Row Operation, Writing 1000 new rows,17.8169841766
+PySpark,1,dataset_300MB,2,2,Row Operation, Writing 10000 new rows,24.6710541248
+PySpark,1,dataset_300MB,2,2,Column Operation, Split 1 Column into 5,31.6530840397
+PySpark,1,dataset_300MB,2,2,Column Operation, Sorting Asc 1 column,42.2984185219
+PySpark,1,dataset_300MB,2,2,Column Operation, Merge 5 columns into 1,25.2638549805
+PySpark,1,dataset_300MB,2,2,Aggregate Operation, GroupBy 5 columns,41.9950883389
+PySpark,1,dataset_300MB,2,2,Column Operation, Merge 2 columns into 1,18.5340440273
+PySpark,1,dataset_300MB,2,2,Row Operation, Writing 100 new rows,18.1146998405
+PySpark,1,dataset_300MB,2,2,Column Operation, Merge 10 columns into 1,23.1481871605
+PySpark,1,dataset_300MB,2,2,Column Operation, Mathematical Operation on Columns,2.8883514404
+PySpark,1,dataset_300MB,2,2,Row Operation, Filter,7.2163636684
+PySpark,1,dataset_300MB,2,2,Aggregate Operation, GroupBy 1 column,24.9917383194
+PySpark,1,dataset_300MB,2,2,Column Operation, Sorting Asc 5 column,82.1798241138
+PySpark,1,dataset_300MB,2,2,Row Operation, Filter Reg Ex 1,3.5981862545
+PySpark,1,dataset_300MB,2,2,Column Operation, Sorting Desc 10 column,80.0622625351
+PySpark,1,dataset_300MB,2,2,Row Operation, Filter Reg Ex 2,3.7025282383
+PySpark,1,dataset_300MB,2,3,Row Operation, Writing 1000 new rows,18.8156392574
+PySpark,1,dataset_300MB,2,3,Column Operation, Sorting Desc 5 column,96.3458197117
+PySpark,1,dataset_300MB,2,3,Aggregate Operation, GroupBy 5 columns,42.2366511822
+PySpark,1,dataset_300MB,2,3,Row Operation, Filter Reg Ex 2,4.5176136494
+PySpark,1,dataset_300MB,2,3,Row Operation, Filter Reg Ex 1,4.8792264462
+PySpark,1,dataset_300MB,2,3,Mixed Operation, Pivot 1 Rows and 1 Column,8.3519675732
+PySpark,1,dataset_300MB,2,3,Column Operation, Sorting Asc 1 column,105.0119688511
+PySpark,1,dataset_300MB,2,3,Column Operation, Sorting Asc 5 column,87.8065087795
+PySpark,1,dataset_300MB,2,3,Column Operation, Mathematical Operation on Columns,2.4134693146
+PySpark,1,dataset_300MB,2,3,Aggregate Operation, Ranking by Group,20.662263155
+PySpark,1,dataset_300MB,2,3,Row Operation, Writing 10000 new rows,22.6007399559
+PySpark,1,dataset_300MB,2,3,Row Operation, Running Sum,28.7218551636
+PySpark,1,dataset_300MB,2,3,Column Operation, Split 1 Column into 10,25.7918713093
+PySpark,1,dataset_300MB,2,3,Column Operation, Sorting Desc 1 column,76.1880066395
+PySpark,1,dataset_300MB,2,3,Column Operation, Sorting Asc 10 column,83.6265470982
+PySpark,1,dataset_300MB,2,3,Column Operation, Merge 5 columns into 1,19.8852345943
+PySpark,1,dataset_300MB,2,3,Row Operation, Shift (Lag),31.7690658569
+PySpark,1,dataset_300MB,2,3,Column Operation, Split 1 Column into 5,22.6039574146
+PySpark,1,dataset_300MB,2,3,Row Operation, Writing 100 new rows,22.7070126534
+PySpark,1,dataset_300MB,2,3,Aggregate Operation, GroupBy 1 column,24.6746101379
+PySpark,1,dataset_300MB,2,3,Column Operation, Sorting Desc 10 column,96.4151711464
+PySpark,1,dataset_300MB,2,3,Column Operation, Merge 10 columns into 1,27.2455253601
+PySpark,1,dataset_300MB,2,3,Column Operation, Merge 2 columns into 1,23.942620039
+PySpark,1,dataset_300MB,2,3,Mixed Operation, Pivot 5 Rows and 1 Column,14.7739233971
+PySpark,1,dataset_300MB,2,3,Aggregate Operation, GroupBy 10 columns,68.2457885742
+PySpark,1,dataset_300MB,2,3,Row Operation, Filter,5.4547765255
+PySpark,1,dataset_300MB,2,3,Mixed Operation, Pivot 10 Rows and 1 Column,17.7597155571
+PySpark,1,dataset_300MB,2,4,Column Operation, Sorting Desc 1 column,95.1954576969
+PySpark,1,dataset_300MB,2,4,Column Operation, Sorting Asc 10 column,54.3651707172
+PySpark,1,dataset_300MB,2,4,Column Operation, Split 1 Column into 10,34.6618192196
+PySpark,1,dataset_300MB,2,4,Mixed Operation, Pivot 1 Rows and 1 Column,6.8373205662
+PySpark,1,dataset_300MB,2,4,Mixed Operation, Pivot 5 Rows and 1 Column,13.9062168598
+PySpark,1,dataset_300MB,2,4,Row Operation, Filter Reg Ex 2,3.679964304
+PySpark,1,dataset_300MB,2,4,Column Operation, Merge 10 columns into 1,22.2355360985
+PySpark,1,dataset_300MB,2,4,Row Operation, Shift (Lag),30.3983631134
+PySpark,1,dataset_300MB,2,4,Mixed Operation, Pivot 10 Rows and 1 Column,19.5583200455
+PySpark,1,dataset_300MB,2,4,Column Operation, Sorting Desc 5 column,83.4455883503
+PySpark,1,dataset_300MB,2,4,Row Operation, Filter,5.1186425686
+PySpark,1,dataset_300MB,2,4,Row Operation, Writing 10000 new rows,23.23285079
+PySpark,1,dataset_300MB,2,4,Row Operation, Filter Reg Ex 1,3.6225910187
+PySpark,1,dataset_300MB,2,4,Row Operation, Running Sum,27.736615181
+PySpark,1,dataset_300MB,2,4,Column Operation, Merge 2 columns into 1,21.5381176472
+PySpark,1,dataset_300MB,2,4,Row Operation, Writing 1000 new rows,18.6653113365
+PySpark,1,dataset_300MB,2,4,Column Operation, Mathematical Operation on Columns,2.4157822132
+PySpark,1,dataset_300MB,2,4,Column Operation, Sorting Asc 5 column,68.2149422169
+PySpark,1,dataset_300MB,2,4,Column Operation, Sorting Asc 1 column,62.9567713737
+PySpark,1,dataset_300MB,2,4,Aggregate Operation, GroupBy 5 columns,67.0871226788
+PySpark,1,dataset_300MB,2,4,Column Operation, Merge 5 columns into 1,36.2801134586
+PySpark,1,dataset_300MB,2,4,Column Operation, Split 1 Column into 5,28.3712213039
+PySpark,1,dataset_300MB,2,4,Aggregate Operation, Ranking by Group,40.7759337425
+PySpark,1,dataset_300MB,2,4,Column Operation, Sorting Desc 10 column,101.253950119
+PySpark,1,dataset_300MB,2,4,Aggregate Operation, GroupBy 1 column,27.8350849152
+PySpark,1,dataset_300MB,2,4,Aggregate Operation, GroupBy 10 columns,77.8495543003
+PySpark,1,dataset_300MB,2,4,Row Operation, Writing 100 new rows,24.3458664417
+PySpark,1,dataset_300MB,2,5,Column Operation, Sorting Desc 1 column,71.9315011501
+PySpark,1,dataset_300MB,2,5,Column Operation, Merge 10 columns into 1,21.0642867088
+PySpark,1,dataset_300MB,2,5,Column Operation, Merge 2 columns into 1,17.3921806812
+PySpark,1,dataset_300MB,2,5,Column Operation, Sorting Asc 1 column,65.0315442085
+PySpark,1,dataset_300MB,2,5,Aggregate Operation, Ranking by Group,21.4428935051
+PySpark,1,dataset_300MB,2,5,Column Operation, Sorting Desc 10 column,71.3408272266
+PySpark,1,dataset_300MB,2,5,Column Operation, Mathematical Operation on Columns,2.4021222591
+PySpark,1,dataset_300MB,2,5,Row Operation, Running Sum,26.1776471138
+PySpark,1,dataset_300MB,2,5,Row Operation, Writing 100 new rows,16.7947516441
+PySpark,1,dataset_300MB,2,5,Aggregate Operation, GroupBy 10 columns,77.2880039215
+PySpark,1,dataset_300MB,2,5,Row Operation, Filter Reg Ex 1,3.6804335117
+PySpark,1,dataset_300MB,2,5,Column Operation, Sorting Asc 5 column,96.406689167
+PySpark,1,dataset_300MB,2,5,Column Operation, Sorting Desc 5 column,61.4494359493
+PySpark,1,dataset_300MB,2,5,Row Operation, Writing 10000 new rows,18.4199578762
+PySpark,1,dataset_300MB,2,5,Column Operation, Merge 5 columns into 1,28.5899956226
+PySpark,1,dataset_300MB,2,5,Aggregate Operation, GroupBy 5 columns,43.1039013863
+PySpark,1,dataset_300MB,2,5,Row Operation, Filter,5.876541853
+PySpark,1,dataset_300MB,2,5,Row Operation, Filter Reg Ex 2,3.8249645233
+PySpark,1,dataset_300MB,2,5,Mixed Operation, Pivot 5 Rows and 1 Column,13.6084160805
+PySpark,1,dataset_300MB,2,5,Column Operation, Sorting Asc 10 column,103.0821607113
+PySpark,1,dataset_300MB,2,5,Row Operation, Shift (Lag),33.2983329296
+PySpark,1,dataset_300MB,2,5,Column Operation, Split 1 Column into 10,24.0766537189
+PySpark,1,dataset_300MB,2,5,Row Operation, Writing 1000 new rows,18.7459897995
+PySpark,1,dataset_300MB,2,5,Column Operation, Split 1 Column into 5,20.419413805
+PySpark,1,dataset_300MB,2,5,Mixed Operation, Pivot 10 Rows and 1 Column,19.8309810162
+PySpark,1,dataset_300MB,2,5,Mixed Operation, Pivot 1 Rows and 1 Column,7.1837325096
+PySpark,1,dataset_300MB,2,5,Aggregate Operation, GroupBy 1 column,27.616300106
+PySpark,1,dataset_300MB,2,6,Mixed Operation, Pivot 10 Rows and 1 Column,17.8522269726
+PySpark,1,dataset_300MB,2,6,Mixed Operation, Pivot 1 Rows and 1 Column,7.7243244648
+PySpark,1,dataset_300MB,2,6,Row Operation, Writing 10000 new rows,20.7150492668
+PySpark,1,dataset_300MB,2,6,Row Operation, Running Sum,29.1976592541
+PySpark,1,dataset_300MB,2,6,Aggregate Operation, Ranking by Group,26.330753088
+PySpark,1,dataset_300MB,2,6,Column Operation, Sorting Asc 1 column,84.2747876644
+PySpark,1,dataset_300MB,2,6,Aggregate Operation, GroupBy 10 columns,65.5160236359
+PySpark,1,dataset_300MB,2,6,Column Operation, Merge 5 columns into 1,21.1696743965
+PySpark,1,dataset_300MB,2,6,Column Operation, Split 1 Column into 5,20.4959113598
+PySpark,1,dataset_300MB,2,6,Column Operation, Merge 2 columns into 1,16.9466526508
+PySpark,1,dataset_300MB,2,6,Column Operation, Split 1 Column into 10,23.4498093128
+PySpark,1,dataset_300MB,2,6,Row Operation, Writing 100 new rows,19.642603159
+PySpark,1,dataset_300MB,2,6,Row Operation, Shift (Lag),28.7968492508
+PySpark,1,dataset_300MB,2,6,Column Operation, Sorting Asc 10 column,80.4517138004
+PySpark,1,dataset_300MB,2,6,Column Operation, Sorting Desc 1 column,92.4351069927
+PySpark,1,dataset_300MB,2,6,Aggregate Operation, GroupBy 1 column,23.6979372501
+PySpark,1,dataset_300MB,2,6,Row Operation, Filter,5.8644368649
+PySpark,1,dataset_300MB,2,6,Row Operation, Filter Reg Ex 2,3.7243859768
+PySpark,1,dataset_300MB,2,6,Mixed Operation, Pivot 5 Rows and 1 Column,13.9227898121
+PySpark,1,dataset_300MB,2,6,Row Operation, Filter Reg Ex 1,3.7446801662
+PySpark,1,dataset_300MB,2,6,Column Operation, Sorting Desc 10 column,100.8155326843
+PySpark,1,dataset_300MB,2,6,Column Operation, Mathematical Operation on Columns,2.4282302856
+PySpark,1,dataset_300MB,2,6,Aggregate Operation, GroupBy 5 columns,44.7056486607
+PySpark,1,dataset_300MB,2,6,Column Operation, Sorting Desc 5 column,112.4549076557
+PySpark,1,dataset_300MB,2,6,Row Operation, Writing 1000 new rows,25.1706335545
+PySpark,1,dataset_300MB,2,6,Column Operation, Sorting Asc 5 column,86.6613163948
+PySpark,1,dataset_300MB,2,6,Column Operation, Merge 10 columns into 1,26.0927989483
