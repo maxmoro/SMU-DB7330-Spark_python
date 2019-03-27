@@ -1,8 +1,13 @@
 ---
 title: "Analysis"
 author: "Nikhil Gupta"
-date: "March 23, 2019"
-output: html_document
+date: "`r Sys.time()`"
+always_allow_html: yes
+output:
+ html_document:
+   toc: true
+   toc_float: true
+   toc_depth: 3
 ---
 
 ```{r setup, include=FALSE}
@@ -25,11 +30,37 @@ read.clean.files = function(filename){
 }
 
 files = list.files(path = "../Results/", pattern = ".csv$", recursive = TRUE, full.names = TRUE) # List all .csv files
-rows = lapply(files, read.csv, header = FALSE) # Read the files into list
-merged_data = do.call(rbind, rows) # combine the data.frame
-column.names = c("Language","Randomize","Dataset","MachineID","RunID","Type","Operation","TimeTaken")
+#files
+
+databricks.files = files[grepl("Databricks",files)]
+local.vm..files = files[grepl("Local_VM",files)]
+
+rows.databricks = lapply(databricks.files, read.csv, header = FALSE) # Read the files into list
+merged.databricks = do.call(rbind, rows.databricks) # combine the data.frame
+merged.databricks$Setup = 'Databricks'
+
+rows.local.vm = lapply(local.vm..files, read.csv, header = FALSE) # Read the files into list
+merged.local.vm = do.call(rbind, rows.local.vm) # combine the data.frame
+merged.local.vm$Setup = 'Local VM'
+
+merged_data = rbind(merged.databricks,merged.local.vm)
+merged_data$Setup = as.factor(merged_data$Setup)
+
+column.names = c("Language","Randomize","Dataset","MachineID","RunID","Type","Operation","TimeTaken","Setup")
 colnames(merged_data) = column.names
 merged_data$Type = as.factor(gsub(pattern = "Operations", replacement = "Operation", x = merged_data$Type))
+merged_data = merged_data %>% filter(RunID != 1)
+
+# Convert columns to factors
+merged_data$MachineID = as.factor(merged_data$MachineID)
+merged_data$Randomize = as.factor(merged_data$Randomize)
+merged_data$RunID = as.factor(merged_data$RunID)
+
+merged_data$Dataset = sub("dataset_", "", merged_data$Dataset) 
+merged_data$Dataset = sub("MB$", "", merged_data$Dataset) 
+merged_data$Dataset = as.factor(merged_data$Dataset)
+
+str(merged_data)
 head(merged_data)
 summary(merged_data)
 ```
@@ -47,7 +78,7 @@ print(paste("Actual Size of 200MB file (in MB)",size_200MB))
 print(paste("Actual Size of 300MB file (in MB)",size_300MB))
 print(paste("Actual Size of 500MB file (in MB)",size_500MB))
 
-size_info = data.frame(Dataset = c("dataset_10MB","dataset_100MB","dataset_200MB","dataset_300MB","dataset_500MB")
+size_info = data.frame(Dataset = c("10","100","200","300","500")
                        ,Size = c(size_10MB,size_100MB,size_200MB,size_300MB,size_500MB))
 str(size_info)
 ```
@@ -59,6 +90,7 @@ merged_data = merged_data %>%
 ```
 
 
+# Common Functions
 ```{r}
 summarize_results = function(grouped_data){
   rv = grouped_data %>%
@@ -72,42 +104,138 @@ summarize_results = function(grouped_data){
             )
   return(rv)  
 }
+
+
+plot_hist = function(grouped_data, by_var){
+  indices = grouped_data %>%
+    dplyr::group_indices() %>%
+    as.factor()
+
+  grouped_data$Index = as.factor(indices)
+
+  print(ggplot(grouped_data, aes_string(x = "Index", y = "TimeTaken", fill=by_var)) + 
+    geom_boxplot() + 
+    facet_wrap(~Index, scales = 'free',ncol=4))
+  
+  return(grouped_data)
+}
+
 ```
 
-
+# Databricks vs. Local VM
+## Table
 ```{r}
-# Comparison between dataset sizes
 group = merged_data %>% 
-  filter(RunID != 1) %>%
-  group_by(Type, Operation, Language, MachineID, Dataset)
+  group_by(Type, Operation, Language, MachineID, Dataset, Setup)
   
 result = summarize_results(group)
 DT::datatable(result)
 ```
 
-# Observations
+## Plots
+```{r fig.height=125, fig.width=10}
+group = merged_data %>% 
+  group_by(Type, Operation, Language, MachineID, Dataset)
+
+group2 = plot_hist(grouped_data = group, by_var = "Setup")
+ 
+```
+
+
+
+```{r}
+#Evaluate outliers
+DT::datatable(group2$data[group2$data$Index == 39,])
+
+```
+
+# Comparison between dataset sizes
+
+```{r}
+group = merged_data %>% 
+  group_by(Type, Operation, Language, MachineID, Setup, Dataset)
+  
+result = summarize_results(group)
+DT::datatable(result)
+```
+
+## Observations
 * Throughout (MB/Time) does not remian constant. 
 * For column operations, it increased from 10MB to 100MB, but decreases from 100MB to 500MB implying that there is a sweet spot.
 
-```{r}
-# Comparison between Scala and PySpark
+## Plots
+```{r fig.height=125, fig.width=10}
 group = merged_data %>% 
-  filter(RunID != 1) %>%
-  group_by(Type, Operation, Dataset, MachineID, Language)
+  group_by(Type, Operation, Language, MachineID, Setup)
+
+group2 = plot_hist(grouped_data = group, by_var = "Dataset")
+ 
+```
+
+
+```{r}
+#Evaluate outliers
+#DT::datatable(group2$data[group2$data$Index == 39,])
+
+```
+
+
+# Comparison between Scala and PySpark
+```{r}
+
+group = merged_data %>% 
+  group_by(Type, Operation, Dataset, MachineID, Setup, Language)
   
 result = summarize_results(group)
 DT::datatable(result)
 ```
 
-```{r}
-# Comparison between Machine 1 and Machine 2
+
+## Plots
+```{r fig.height=125, fig.width=10}
 group = merged_data %>% 
-  filter(RunID != 1) %>%
-  group_by(Type, Operation, Language, Dataset, MachineID)
+  group_by(Type, Operation, Dataset, MachineID, Setup)
+
+group2 = plot_hist(grouped_data = group, by_var = "Language")
+ 
+```
+
+## Observations
+* In general Scala seems to be faster than PySpark which is good and consistent with theory
+
+```{r}
+#Evaluate outliers
+#DT::datatable(group2$data[group2$data$Index == 39,])
+
+```
+
+
+# Comparison between Machine 1 and Machine 2
+
+```{r}
+group = merged_data %>% 
+  group_by(Type, Operation, Language, Dataset, Setup, MachineID)
   
 result = summarize_results(group)
 DT::datatable(result)
 ```
+
+## Plots
+```{r fig.height=125, fig.width=10}
+group = merged_data %>% 
+  group_by(Type, Operation, Language, Dataset, Setup)
+
+group2 = plot_hist(grouped_data = group, by_var = "MachineID")
+ 
+```
+
+
+```{r}
+#Evaluate outliers
+#DT::datatable(group2$data[group2$data$Index == 39,])
+
+```
+
 
 ```{r}
 
