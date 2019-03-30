@@ -18,10 +18,10 @@ val spark = SparkSession.builder().getOrCreate()
 // COMMAND ----------
 
 // DBTITLE 1,Input Parameters
-var num_of_runs = 2
+var num_of_runs = 5
 var randomize = 1
 var size="10MB"
-var machine = 1 //1 max 2 nikhil
+var machine = 2 //1 max 2 nikhil
 
 // COMMAND ----------
 
@@ -30,14 +30,15 @@ var machine = 1 //1 max 2 nikhil
 var randomizeText = if(randomize == 1) "Random" else "Sequential"
 var file_loc = ""
 // UPDATE THIS PATH //
-var file_prefix = "/home/max/SMU-DB7330-Spark_python/blob/datasets/"
+//var file_prefix = "/home/max/SMU-DB7330-Spark_python/blob/datasets/"
+var file_prefix = "/home/nikhil/msds7330/datasets/"
 var file_name = "dataset_" + size
 
 val dateFormatter = new SimpleDateFormat("yyyyMMdd_hhmm")
 val now  = dateFormatter.format(Calendar.getInstance().getTime())
 // UPDATE THIS PATH //
-var logFileName ="/home/max/SMU-DB7330-Spark_python/blob/timelogs/time_Scala_" +randomizeText + "_" + file_name + "_" + now + ".csv"
-
+//var logFileName ="/home/max/SMU-DB7330-Spark_python/blob/timelogs/time_Scala_" +randomizeText + "_" + file_name + "_" + now + ".csv"
+var logFileName ="/home/nikhil/msds7330/SMU-DB7330-Spark_python/Results/Local_VM/machine2/time_Scala_" +randomizeText + "_" + file_name + "_" + now + ".csv"
 println("Log File Name:" + logFileName)
 
 

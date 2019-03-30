@@ -1,0 +1,216 @@
+Scala,1,dataset_10MB,2,1,Column Operation, Merge 10 columns into 1,2.911
+Scala,1,dataset_10MB,2,1,Column Operation, Full Outer Join 3 Columns,14.148
+Scala,1,dataset_10MB,2,1,Column Operation, Full Outer Join 5 Columns,8.589
+Scala,1,dataset_10MB,2,1,Aggregate Operations, GroupBy 5 columns,21.087
+Scala,1,dataset_10MB,2,1,Mixed Operation, Pivot 5 Rows and 1 Column,10.516
+Scala,1,dataset_10MB,2,1,Column Operation, Left Outer Join 3 Columns,7.226
+Scala,1,dataset_10MB,2,1,Column Operation, Sorting Asc 1 column,15.59
+Scala,1,dataset_10MB,2,1,Mixed Operation, Pivot 1 Rows and 1 Column,4.262
+Scala,1,dataset_10MB,2,1,Column Operation, Split 1 Column into 5,2.527
+Scala,1,dataset_10MB,2,1,Aggregate Operations, Ranking by Group,3.352
+Scala,1,dataset_10MB,2,1,Column Operation, Full Outer Join 10 Columns,8.727
+Scala,1,dataset_10MB,2,1,Column Operation, Sorting Desc 10 column,2.562
+Scala,1,dataset_10MB,2,1,Column Operation, Sorting Desc 5 column,2.177
+Scala,1,dataset_10MB,2,1,Column Operation, Left Outer Join 5 Columns,2.436
+Scala,1,dataset_10MB,2,1,Column Operation, Inner Join 10 Columns,2.429
+Scala,1,dataset_10MB,2,1,Aggregate Operations, GroupBy 10 columns,17.551
+Scala,1,dataset_10MB,2,1,Row Operation, Filter Reg Ex 2,0.633
+Scala,1,dataset_10MB,2,1,Column Operation, Merge 2 columns into 1,0.953
+Scala,1,dataset_10MB,2,1,Column Operation, Split 1 Column into 10,2.478
+Scala,1,dataset_10MB,2,1,Column Operation, Merge 5 columns into 1,0.9
+Scala,1,dataset_10MB,2,1,Row Operation, Filter,0.588
+Scala,1,dataset_10MB,2,1,Mixed Operation, Pivot 10 Rows and 1 Column,7.729
+Scala,1,dataset_10MB,2,1,Column Operation, Mathematical Operations on Columns,0.561
+Scala,1,dataset_10MB,2,1,Column Operation, Inner Join 5 Columns,2.025
+Scala,1,dataset_10MB,2,1,Column Operation, Left Outer Join 10 Columns,1.93
+Scala,1,dataset_10MB,2,1,Row Operation, Writing 1000 new rows,0.832
+Scala,1,dataset_10MB,2,1,Row Operation, Writing 10000 new rows,0.948
+Scala,1,dataset_10MB,2,1,Row Operation, Running Sum,0.821
+Scala,1,dataset_10MB,2,1,Column Operation, Sorting Asc 10 column,2.607
+Scala,1,dataset_10MB,2,1,Column Operation, Inner Join 3 Columns,3.921
+Scala,1,dataset_10MB,2,1,Aggregate Operations, GroupBy 1 column,12.509
+Scala,1,dataset_10MB,2,1,Row Operation, Shift (Lag),0.797
+Scala,1,dataset_10MB,2,1,Column Operation, Sorting Desc 1 column,3.189
+Scala,1,dataset_10MB,2,1,Row Operation, Writing 100 new rows,1.188
+Scala,1,dataset_10MB,2,1,Column Operation, Sorting Asc 5 column,2.007
+Scala,1,dataset_10MB,2,1,Row Operation, Filter Reg Ex 1,0.666
+Scala,1,dataset_10MB,2,2,Row Operation, Filter Reg Ex 2,0.524
+Scala,1,dataset_10MB,2,2,Aggregate Operations, GroupBy 5 columns,16.375
+Scala,1,dataset_10MB,2,2,Column Operation, Mathematical Operations on Columns,0.354
+Scala,1,dataset_10MB,2,2,Mixed Operation, Pivot 10 Rows and 1 Column,9.027
+Scala,1,dataset_10MB,2,2,Row Operation, Filter Reg Ex 1,0.469
+Scala,1,dataset_10MB,2,2,Column Operation, Left Outer Join 5 Columns,2.816
+Scala,1,dataset_10MB,2,2,Column Operation, Left Outer Join 3 Columns,3.673
+Scala,1,dataset_10MB,2,2,Row Operation, Shift (Lag),0.417
+Scala,1,dataset_10MB,2,2,Column Operation, Full Outer Join 5 Columns,6.461
+Scala,1,dataset_10MB,2,2,Column Operation, Full Outer Join 3 Columns,6.481
+Scala,1,dataset_10MB,2,2,Column Operation, Inner Join 10 Columns,2.069
+Scala,1,dataset_10MB,2,2,Column Operation, Inner Join 3 Columns,3.011
+Scala,1,dataset_10MB,2,2,Aggregate Operations, Ranking by Group,2.796
+Scala,1,dataset_10MB,2,2,Column Operation, Sorting Desc 10 column,1.682
+Scala,1,dataset_10MB,2,2,Mixed Operation, Pivot 5 Rows and 1 Column,6.324
+Scala,1,dataset_10MB,2,2,Column Operation, Full Outer Join 10 Columns,7.485
+Scala,1,dataset_10MB,2,2,Column Operation, Sorting Desc 1 column,1.523
+Scala,1,dataset_10MB,2,2,Row Operation, Writing 1000 new rows,0.58
+Scala,1,dataset_10MB,2,2,Row Operation, Running Sum,0.459
+Scala,1,dataset_10MB,2,2,Column Operation, Sorting Desc 5 column,1.857
+Scala,1,dataset_10MB,2,2,Aggregate Operations, GroupBy 10 columns,17.155
+Scala,1,dataset_10MB,2,2,Column Operation, Inner Join 5 Columns,2.329
+Scala,1,dataset_10MB,2,2,Row Operation, Writing 10000 new rows,1.068
+Scala,1,dataset_10MB,2,2,Column Operation, Sorting Asc 1 column,2.011
+Scala,1,dataset_10MB,2,2,Mixed Operation, Pivot 1 Rows and 1 Column,3.418
+Scala,1,dataset_10MB,2,2,Column Operation, Sorting Asc 5 column,2.085
+Scala,1,dataset_10MB,2,2,Column Operation, Split 1 Column into 10,2.427
+Scala,1,dataset_10MB,2,2,Column Operation, Merge 5 columns into 1,1.082
+Scala,1,dataset_10MB,2,2,Column Operation, Sorting Asc 10 column,2.509
+Scala,1,dataset_10MB,2,2,Row Operation, Filter,0.628
+Scala,1,dataset_10MB,2,2,Aggregate Operations, GroupBy 1 column,12.261
+Scala,1,dataset_10MB,2,2,Column Operation, Merge 10 columns into 1,1.208
+Scala,1,dataset_10MB,2,2,Column Operation, Merge 2 columns into 1,0.962
+Scala,1,dataset_10MB,2,2,Column Operation, Left Outer Join 10 Columns,2.941
+Scala,1,dataset_10MB,2,2,Column Operation, Split 1 Column into 5,2.148
+Scala,1,dataset_10MB,2,2,Row Operation, Writing 100 new rows,0.847
+Scala,1,dataset_10MB,2,3,Row Operation, Writing 100 new rows,1.157
+Scala,1,dataset_10MB,2,3,Column Operation, Sorting Asc 10 column,2.856
+Scala,1,dataset_10MB,2,3,Aggregate Operations, GroupBy 1 column,9.641
+Scala,1,dataset_10MB,2,3,Column Operation, Sorting Desc 5 column,1.972
+Scala,1,dataset_10MB,2,3,Column Operation, Full Outer Join 5 Columns,6.705
+Scala,1,dataset_10MB,2,3,Column Operation, Sorting Asc 5 column,1.875
+Scala,1,dataset_10MB,2,3,Column Operation, Split 1 Column into 5,1.567
+Scala,1,dataset_10MB,2,3,Column Operation, Merge 10 columns into 1,0.574
+Scala,1,dataset_10MB,2,3,Column Operation, Left Outer Join 5 Columns,2.387
+Scala,1,dataset_10MB,2,3,Column Operation, Inner Join 3 Columns,4.425
+Scala,1,dataset_10MB,2,3,Aggregate Operations, GroupBy 10 columns,17.572
+Scala,1,dataset_10MB,2,3,Column Operation, Full Outer Join 10 Columns,10.924
+Scala,1,dataset_10MB,2,3,Column Operation, Mathematical Operations on Columns,0.336
+Scala,1,dataset_10MB,2,3,Row Operation, Filter Reg Ex 2,0.359
+Scala,1,dataset_10MB,2,3,Column Operation, Left Outer Join 10 Columns,1.848
+Scala,1,dataset_10MB,2,3,Column Operation, Sorting Asc 1 column,1.282
+Scala,1,dataset_10MB,2,3,Column Operation, Merge 5 columns into 1,0.721
+Scala,1,dataset_10MB,2,3,Column Operation, Merge 2 columns into 1,0.809
+Scala,1,dataset_10MB,2,3,Column Operation, Inner Join 10 Columns,1.531
+Scala,1,dataset_10MB,2,3,Column Operation, Left Outer Join 3 Columns,3.006
+Scala,1,dataset_10MB,2,3,Mixed Operation, Pivot 5 Rows and 1 Column,6.072
+Scala,1,dataset_10MB,2,3,Aggregate Operations, GroupBy 5 columns,16.557
+Scala,1,dataset_10MB,2,3,Row Operation, Filter Reg Ex 1,0.592
+Scala,1,dataset_10MB,2,3,Mixed Operation, Pivot 10 Rows and 1 Column,8.337
+Scala,1,dataset_10MB,2,3,Mixed Operation, Pivot 1 Rows and 1 Column,2.331
+Scala,1,dataset_10MB,2,3,Column Operation, Full Outer Join 3 Columns,6.807
+Scala,1,dataset_10MB,2,3,Row Operation, Writing 10000 new rows,1.071
+Scala,1,dataset_10MB,2,3,Row Operation, Writing 1000 new rows,0.626
+Scala,1,dataset_10MB,2,3,Row Operation, Filter,0.463
+Scala,1,dataset_10MB,2,3,Row Operation, Running Sum,0.626
+Scala,1,dataset_10MB,2,3,Column Operation, Inner Join 5 Columns,2.31
+Scala,1,dataset_10MB,2,3,Aggregate Operations, Ranking by Group,2.886
+Scala,1,dataset_10MB,2,3,Row Operation, Shift (Lag),0.595
+Scala,1,dataset_10MB,2,3,Column Operation, Sorting Desc 1 column,1.684
+Scala,1,dataset_10MB,2,3,Column Operation, Sorting Desc 10 column,1.669
+Scala,1,dataset_10MB,2,3,Column Operation, Split 1 Column into 10,2.02
+Scala,1,dataset_10MB,2,4,Column Operation, Full Outer Join 5 Columns,6.079
+Scala,1,dataset_10MB,2,4,Column Operation, Split 1 Column into 5,1.738
+Scala,1,dataset_10MB,2,4,Column Operation, Sorting Asc 1 column,1.763
+Scala,1,dataset_10MB,2,4,Row Operation, Running Sum,0.325
+Scala,1,dataset_10MB,2,4,Mixed Operation, Pivot 10 Rows and 1 Column,7.986
+Scala,1,dataset_10MB,2,4,Aggregate Operations, GroupBy 10 columns,18.841
+Scala,1,dataset_10MB,2,4,Column Operation, Merge 2 columns into 1,0.768
+Scala,1,dataset_10MB,2,4,Column Operation, Split 1 Column into 10,2.856
+Scala,1,dataset_10MB,2,4,Aggregate Operations, GroupBy 5 columns,18.888
+Scala,1,dataset_10MB,2,4,Row Operation, Filter Reg Ex 2,0.745
+Scala,1,dataset_10MB,2,4,Column Operation, Full Outer Join 3 Columns,8.911
+Scala,1,dataset_10MB,2,4,Column Operation, Full Outer Join 10 Columns,8.537
+Scala,1,dataset_10MB,2,4,Column Operation, Sorting Desc 10 column,1.731
+Scala,1,dataset_10MB,2,4,Column Operation, Merge 5 columns into 1,0.611
+Scala,1,dataset_10MB,2,4,Column Operation, Sorting Desc 1 column,1.58
+Scala,1,dataset_10MB,2,4,Row Operation, Filter Reg Ex 1,0.473
+Scala,1,dataset_10MB,2,4,Column Operation, Left Outer Join 3 Columns,4.044
+Scala,1,dataset_10MB,2,4,Row Operation, Writing 1000 new rows,1.01
+Scala,1,dataset_10MB,2,4,Column Operation, Sorting Desc 5 column,1.788
+Scala,1,dataset_10MB,2,4,Column Operation, Left Outer Join 5 Columns,1.629
+Scala,1,dataset_10MB,2,4,Column Operation, Inner Join 10 Columns,1.968
+Scala,1,dataset_10MB,2,4,Column Operation, Left Outer Join 10 Columns,1.855
+Scala,1,dataset_10MB,2,4,Row Operation, Filter,0.64
+Scala,1,dataset_10MB,2,4,Column Operation, Sorting Asc 5 column,1.39
+Scala,1,dataset_10MB,2,4,Mixed Operation, Pivot 5 Rows and 1 Column,5.914
+Scala,1,dataset_10MB,2,4,Aggregate Operations, Ranking by Group,2.162
+Scala,1,dataset_10MB,2,4,Row Operation, Writing 10000 new rows,1.021
+Scala,1,dataset_10MB,2,4,Column Operation, Mathematical Operations on Columns,0.377
+Scala,1,dataset_10MB,2,4,Column Operation, Inner Join 5 Columns,2.117
+Scala,1,dataset_10MB,2,4,Mixed Operation, Pivot 1 Rows and 1 Column,2.787
+Scala,1,dataset_10MB,2,4,Column Operation, Merge 10 columns into 1,0.912
+Scala,1,dataset_10MB,2,4,Column Operation, Sorting Asc 10 column,2.001
+Scala,1,dataset_10MB,2,4,Aggregate Operations, GroupBy 1 column,10.149
+Scala,1,dataset_10MB,2,4,Row Operation, Shift (Lag),0.45
+Scala,1,dataset_10MB,2,4,Column Operation, Inner Join 3 Columns,3.186
+Scala,1,dataset_10MB,2,4,Row Operation, Writing 100 new rows,0.564
+Scala,1,dataset_10MB,2,5,Aggregate Operations, GroupBy 5 columns,16.681
+Scala,1,dataset_10MB,2,5,Column Operation, Full Outer Join 10 Columns,8.291
+Scala,1,dataset_10MB,2,5,Row Operation, Writing 100 new rows,0.545
+Scala,1,dataset_10MB,2,5,Column Operation, Inner Join 5 Columns,2.0
+Scala,1,dataset_10MB,2,5,Column Operation, Sorting Asc 5 column,2.584
+Scala,1,dataset_10MB,2,5,Column Operation, Full Outer Join 5 Columns,5.557
+Scala,1,dataset_10MB,2,5,Column Operation, Sorting Desc 5 column,1.51
+Scala,1,dataset_10MB,2,5,Aggregate Operations, GroupBy 10 columns,16.865
+Scala,1,dataset_10MB,2,5,Row Operation, Running Sum,0.487
+Scala,1,dataset_10MB,2,5,Mixed Operation, Pivot 1 Rows and 1 Column,3.747
+Scala,1,dataset_10MB,2,5,Column Operation, Left Outer Join 5 Columns,2.091
+Scala,1,dataset_10MB,2,5,Row Operation, Writing 1000 new rows,0.588
+Scala,1,dataset_10MB,2,5,Column Operation, Sorting Asc 1 column,2.02
+Scala,1,dataset_10MB,2,5,Column Operation, Merge 10 columns into 1,0.944
+Scala,1,dataset_10MB,2,5,Mixed Operation, Pivot 5 Rows and 1 Column,6.704
+Scala,1,dataset_10MB,2,5,Row Operation, Filter Reg Ex 2,0.651
+Scala,1,dataset_10MB,2,5,Column Operation, Full Outer Join 3 Columns,6.419
+Scala,1,dataset_10MB,2,5,Column Operation, Inner Join 10 Columns,1.798
+Scala,1,dataset_10MB,2,5,Column Operation, Sorting Desc 1 column,1.664
+Scala,1,dataset_10MB,2,5,Column Operation, Left Outer Join 3 Columns,3.688
+Scala,1,dataset_10MB,2,5,Row Operation, Filter Reg Ex 1,0.747
+Scala,1,dataset_10MB,2,5,Mixed Operation, Pivot 10 Rows and 1 Column,6.082
+Scala,1,dataset_10MB,2,5,Row Operation, Writing 10000 new rows,0.844
+Scala,1,dataset_10MB,2,5,Column Operation, Inner Join 3 Columns,2.427
+Scala,1,dataset_10MB,2,5,Aggregate Operations, GroupBy 1 column,8.886
+Scala,1,dataset_10MB,2,5,Column Operation, Left Outer Join 10 Columns,1.694
+Scala,1,dataset_10MB,2,5,Column Operation, Split 1 Column into 10,2.372
+Scala,1,dataset_10MB,2,5,Column Operation, Sorting Asc 10 column,2.075
+Scala,1,dataset_10MB,2,5,Aggregate Operations, Ranking by Group,2.37
+Scala,1,dataset_10MB,2,5,Row Operation, Filter,0.595
+Scala,1,dataset_10MB,2,5,Column Operation, Merge 2 columns into 1,0.916
+Scala,1,dataset_10MB,2,5,Column Operation, Mathematical Operations on Columns,0.362
+Scala,1,dataset_10MB,2,5,Column Operation, Split 1 Column into 5,1.571
+Scala,1,dataset_10MB,2,5,Column Operation, Sorting Desc 10 column,2.476
+Scala,1,dataset_10MB,2,5,Column Operation, Merge 5 columns into 1,1.126
+Scala,1,dataset_10MB,2,5,Row Operation, Shift (Lag),0.455
+Scala,1,dataset_10MB,2,6,Row Operation, Writing 1000 new rows,0.837
+Scala,1,dataset_10MB,2,6,Column Operation, Split 1 Column into 5,1.561
+Scala,1,dataset_10MB,2,6,Column Operation, Full Outer Join 5 Columns,7.295
+Scala,1,dataset_10MB,2,6,Column Operation, Mathematical Operations on Columns,0.342
+Scala,1,dataset_10MB,2,6,Row Operation, Writing 100 new rows,0.773
+Scala,1,dataset_10MB,2,6,Column Operation, Merge 2 columns into 1,0.881
+Scala,1,dataset_10MB,2,6,Aggregate Operations, GroupBy 1 column,8.788
+Scala,1,dataset_10MB,2,6,Column Operation, Full Outer Join 10 Columns,6.567
+Scala,1,dataset_10MB,2,6,Column Operation, Left Outer Join 3 Columns,3.011
+Scala,1,dataset_10MB,2,6,Aggregate Operations, Ranking by Group,2.345
+Scala,1,dataset_10MB,2,6,Mixed Operation, Pivot 5 Rows and 1 Column,5.822
+Scala,1,dataset_10MB,2,6,Row Operation, Running Sum,0.448
+Scala,1,dataset_10MB,2,6,Column Operation, Sorting Desc 10 column,1.727
+Scala,1,dataset_10MB,2,6,Aggregate Operations, GroupBy 5 columns,15.349
+Scala,1,dataset_10MB,2,6,Mixed Operation, Pivot 1 Rows and 1 Column,3.365
+Scala,1,dataset_10MB,2,6,Column Operation, Sorting Asc 10 column,2.858
+Scala,1,dataset_10MB,2,6,Column Operation, Inner Join 3 Columns,3.011
+Scala,1,dataset_10MB,2,6,Column Operation, Left Outer Join 5 Columns,1.88
+Scala,1,dataset_10MB,2,6,Column Operation, Full Outer Join 3 Columns,5.916
+Scala,1,dataset_10MB,2,6,Column Operation, Merge 10 columns into 1,0.739
+Scala,1,dataset_10MB,2,6,Row Operation, Filter Reg Ex 1,0.495
+Scala,1,dataset_10MB,2,6,Column Operation, Inner Join 10 Columns,2.011
+Scala,1,dataset_10MB,2,6,Column Operation, Left Outer Join 10 Columns,1.951
+Scala,1,dataset_10MB,2,6,Column Operation, Merge 5 columns into 1,0.837
+Scala,1,dataset_10MB,2,6,Row Operation, Writing 10000 new rows,1.112
+Scala,1,dataset_10MB,2,6,Column Operation, Sorting Desc 1 column,1.588
+Scala,1,dataset_10MB,2,6,Aggregate Operations, GroupBy 10 columns,13.173
+Scala,1,dataset_10MB,2,6,Row Operation, Filter Reg Ex 2,0.481
+Scala,1,dataset_10MB,2,6,Column Operation, Split 1 Column into 10,2.087
+Scala,1,dataset_10MB,2,6,Row Operation, Filter,0.455
+Scala,1,dataset_10MB,2,6,Column Operation, Sorting Desc 5 column,1.848
+Scala,1,dataset_10MB,2,6,Mixed Operation, Pivot 10 Rows and 1 Column,5.945
+Scala,1,dataset_10MB,2,6,Column Operation, Sorting Asc 5 column,1.544
+Scala,1,dataset_10MB,2,6,Column Operation, Sorting Asc 1 column,1.469
+Scala,1,dataset_10MB,2,6,Row Operation, Shift (Lag),0.373
+Scala,1,dataset_10MB,2,6,Column Operation, Inner Join 5 Columns,1.716

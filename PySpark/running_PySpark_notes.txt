@@ -1,0 +1,21 @@
+Following instructions are for running PySpark on Local Virtual Machine.
+
+To launch jupyter notebook with Spark
+~/spark-2.4.0-bin-hadoop2.7/python$ jupyter notebook
+
+Actually, it can be launched by using "jupyter notebook" from any location using findspark as documented below
+We can use findspark to assist with launching jupyter notebook from anywhere and no matter where we launch it from, we will be able to find the spark package inside the notebook. 
+
+*****************************************************************
+*** Instructions for launching jupyter notebook from anywhere ***
+*****************************************************************
+import pyspark # does not work 
+import findspark
+findspark.init('/home/nikhil/spark-2.4.0-bin-hadoop2.7')
+import pyspark # works now
+*****************************************************************
+
+If we do not use find spark methodology above, then jupyter noteboook must reside at this level
+~/spark-2.4.0-bin-hadoop2.7/python only. It can not be nested under this folder in another folder called MSDS7330
+
+
