@@ -18,7 +18,7 @@ val spark = SparkSession.builder().getOrCreate()
 // COMMAND ----------
 
 // DBTITLE 1,Input Parameters
-var num_of_runs = 3
+var num_of_runs = 2
 var randomize = 1
 var size="500MB"
 var machine = 2 //1 max 2 nikhil
