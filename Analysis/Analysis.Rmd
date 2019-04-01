@@ -8,6 +8,8 @@ output:
    toc: true
    toc_float: true
    toc_depth: 3
+params:
+  options: 2 # 1 for Row, 2 for columns, 3 for Mixed + Aggregate
 ---
 
 ```{r setup, include=FALSE}
@@ -21,7 +23,11 @@ library(DT)
 ```
 
 ```{r}
+options = params$options
+```
 
+
+```{r}
 read.clean.files = function(filename){
   file = read.csv(filename, header = FALSE)
   column.names = c("Language","Randomize","Dataset","MachineID","RunID","Type","Operation","TimeTaken")
@@ -112,132 +118,88 @@ plot_hist = function(grouped_data, by_var){
     as.factor()
 
   grouped_data$Index = as.factor(indices)
-
+  facet_form = as.formula(paste( "~" , paste(grouped_data %>% dplyr::group_vars(), collapse = " + "), sep = ""))
+  
   print(ggplot(grouped_data, aes_string(x = "Index", y = "TimeTaken", fill=by_var)) + 
     geom_boxplot() + 
-    facet_wrap(~Index, scales = 'free',ncol=4))
+    #facet_wrap(Index ~ .  , scales = 'free',ncol=4, labeller = label_both))
+    facet_wrap(facet_form  , scales = 'free',ncol=4, labeller = label_both))
   
   return(grouped_data)
 }
 
-```
-
-# Databricks vs. Local VM
-## Table
-```{r}
-group = merged_data %>% 
-  group_by(Type, Operation, Language, MachineID, Dataset, Setup)
+databricks_vs_localVM = function(arData) {
+  result = arData %>% 
+    group_by(Type, Operation, Language, MachineID, Dataset, Setup) %>%
+    summarize_results()
   
-result = summarize_results(group)
-DT::datatable(result)
-```
-
-## Plots
-```{r fig.height=125, fig.width=10}
-group = merged_data %>% 
-  group_by(Type, Operation, Language, MachineID, Dataset)
-
-group2 = plot_hist(grouped_data = group, by_var = "Setup")
- 
-```
-
-
-
-```{r}
-#Evaluate outliers
-DT::datatable(group2$data[group2$data$Index == 39,])
-
-```
-
-# Comparison between dataset sizes
-
-```{r}
-group = merged_data %>% 
-  group_by(Type, Operation, Language, MachineID, Setup, Dataset)
+  group = arData %>% 
+    group_by(Type, Operation, Language, MachineID, Dataset)
+  plot_hist(grouped_data = group, by_var = "Setup")
   
-result = summarize_results(group)
-DT::datatable(result)
-```
+  return (result)
+}
 
-## Observations
-* Throughout (MB/Time) does not remian constant. 
-* For column operations, it increased from 10MB to 100MB, but decreases from 100MB to 500MB implying that there is a sweet spot.
-
-## Plots
-```{r fig.height=125, fig.width=10}
-group = merged_data %>% 
-  group_by(Type, Operation, Language, MachineID, Setup)
-
-group2 = plot_hist(grouped_data = group, by_var = "Dataset")
- 
-```
-
-
-```{r}
-#Evaluate outliers
-#DT::datatable(group2$data[group2$data$Index == 39,])
-
-```
-
-
-# Comparison between Scala and PySpark
-```{r}
-
-group = merged_data %>% 
-  group_by(Type, Operation, Dataset, MachineID, Setup, Language)
+PySpark_vs_Scala = function(arData, arOpt=2) {
+  # 1 will only return table
+  # 2 will only plot histograms
+  # 0 will do both
+  result = NA
   
-result = summarize_results(group)
-DT::datatable(result)
-```
-
-
-## Plots
-```{r fig.height=125, fig.width=10}
-group = merged_data %>% 
-  group_by(Type, Operation, Dataset, MachineID, Setup)
-
-group2 = plot_hist(grouped_data = group, by_var = "Language")
- 
-```
-
-## Observations
-* In general Scala seems to be faster than PySpark which is good and consistent with theory
-
-```{r}
-#Evaluate outliers
-#DT::datatable(group2$data[group2$data$Index == 39,])
-
-```
-
-
-# Comparison between Machine 1 and Machine 2
-
-```{r}
-group = merged_data %>% 
-  group_by(Type, Operation, Language, Dataset, Setup, MachineID)
+  if (arOpt == 1 | arOpt == 0){
+    result = arData %>% 
+      group_by(Type, Operation, Dataset, MachineID, Setup, Language) %>%
+      summarize_results()
+  }
   
-result = summarize_results(group)
-DT::datatable(result)
+  if (arOpt == 2 | arOpt == 0){
+    group = arData %>% 
+      group_by(Type, Operation, Dataset, MachineID, Setup)
+    plot_hist(grouped_data = group, by_var = "Language")
+  }
+  
+  return (result)
+}
+
+
 ```
 
-## Plots
-```{r fig.height=125, fig.width=10}
-group = merged_data %>% 
-  group_by(Type, Operation, Language, Dataset, Setup)
+# PySpark vs. Scala
 
-group2 = plot_hist(grouped_data = group, by_var = "MachineID")
- 
+## Row Operations
+
+```{r fig.height=160, fig.width=16}
+if (options == 1){
+  filtered = merged_data %>%
+    filter(Type == "Row Operation") %>%
+    PySpark_vs_Scala(arOpt = 2)
+}
 ```
 
+## Column Operations
+
+```{r fig.height=315, fig.width=16}
+if (options == 2){
+  filtered = merged_data %>%
+    filter(Type == "Column Operation") %>%
+    PySpark_vs_Scala(arOpt = 2)
+}
+```
+
+## Aggregare and MiColumn Operations
+
+```{r fig.height=140, fig.width=16}
+if (options == 3){
+  filtered = merged_data %>%
+    filter(Type == "Aggregate Operation") %>%
+    PySpark_vs_Scala(arOpt = 2)
+  
+  filtered = merged_data %>%
+    filter(Type == "Mixed Operation") %>%
+    PySpark_vs_Scala(arOpt = 2)
+}
+```
 
 ```{r}
-#Evaluate outliers
-#DT::datatable(group2$data[group2$data$Index == 39,])
-
-```
-
-
-```{r}
-
 
 ```
