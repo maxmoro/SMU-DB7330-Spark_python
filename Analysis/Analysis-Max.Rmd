@@ -10,6 +10,10 @@ output:
    toc_depth: 3
 params:
   options: 0 # 1 for Row, 2 for columns, 3 for Mixed + Aggregate
+  targetVar: 'Throughput' #Throughput, TimeTaken
+  showOutliers: FALSE 
+  
+  
 ---
 
 ```{r setup, include=FALSE}
@@ -19,11 +23,16 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(DT)
+library(htmltools)
 
 ```
 
 ```{r}
 options = params$options
+targetVar = params$targetVar
+showOutliers = params$showOutliers
+outliersQuantile = ifelse(showOutliers, 1 ,0.90)  #use 1.0 to include all outliers
+outliersShape = ifelse(showOutliers,  19,NA)  
 ```
 
 
@@ -55,7 +64,6 @@ merged_data$Setup = as.factor(merged_data$Setup)
 column.names = c("Language","Randomize","Dataset","MachineID","RunID","Type","Operation","TimeTaken","Setup")
 colnames(merged_data) = column.names
 merged_data$Type = as.factor(gsub(pattern = "Operations", replacement = "Operation", x = merged_data$Type))
-merged_data = merged_data %>% filter(RunID != 1)
 
 # Convert columns to factors
 merged_data$MachineID = as.factor(merged_data$MachineID)
@@ -69,11 +77,6 @@ merged_data$Dataset = as.factor(merged_data$Dataset)
 merged_data$Operation = trimws(as.character(merged_data$Operation),'both')
 merged_data[merged_data$Operation =='Mathematical Operations on Columns',]$Operation ='Mathematical Operation on Columns'
 
-merged_data = merged_data %>% filter(Dataset != 500)
-
-str(merged_data)
-head(merged_data)
-summary(merged_data)
 ```
 
 ```{r}
@@ -92,13 +95,23 @@ print(paste("Actual Size of 500MB file (in MB)",size_500MB))
 size_info = data.frame(Dataset = c("10","100","200","300","500")
                        ,Size = c(size_10MB,size_100MB,size_200MB,size_300MB,size_500MB))
 str(size_info)
+
+merged_data = merged_data %>%
+  merge(size_info,by='Dataset') %>%
+  mutate(Throughput = Size/TimeTaken)
+
+```
+```{r}
+
+data_raw = merged_data
+merged_data = merged_data %>% 
+    filter(RunID != 1)
+
+str(merged_data)
+head(merged_data)
+summary(merged_data)
 ```
 
-```{r}
-merged_data = merged_data %>%
-  merge(size_info) %>%
-  mutate(Throughput = Size/TimeTaken)
-```
 
 
 # Common Functions
@@ -166,12 +179,12 @@ PySpark_vs_Scala = function(arData, arOpt=2) {
   return (result)
 }
 
-ggplot_colors = function(plot,...){
+ggplot_colors = function(plot,strip_angle=0,...){
   plot +
   scale_color_manual(values=c("#33a02c","#1f78b4"),breaks=c('PySpark','Scala'))+
   scale_fill_manual(values=c("#b2df8a","#a6cee3"),breaks=c('PySpark','Scala'))+
     theme_light() +
-    ggplot2::theme(strip.text.y=element_text(angle=0)
+    ggplot2::theme(strip.text.y=element_text(angle=strip_angle)
                    ,...)
   }
 
@@ -183,7 +196,8 @@ ggplot_colors = function(plot,...){
 using a simple LM we can identify the elements that contribute to the speed of the queries, we see Scala  has a coeffiecnet of -7, meaning that it bring an overall benefits of 7 seconds, keeping constant the other variables. 
 
 ```{r}
-model = lm(data=merged_data,TimeTaken ~ Dataset + Language  + Operation + Setup  )
+form=as.formula(paste0(targetVar,' ~ Dataset + Language  + Operation + Setup'))
+model = lm(data=merged_data,formula=form)
 summary(model)
 ```
 
@@ -196,14 +210,31 @@ Anyway, other sitation shows a similar perfomance across lancuages and environme
 
 ```{r}
 filtered= merged_data 
-
-p=ggplot(data=filtered, aes(x=Setup,y=TimeTaken,color=Language,fill=Language)) + 
-    geom_boxplot(outlier.size = 0.1,size=0.1) +
+p=ggplot(data=filtered, aes_string(x='Setup',y=targetVar,color='Language',fill='Language')) + 
+    geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape = outliersShape) +
+  scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))) +
    facet_wrap(~Type,scales='free') 
   ggplot_colors(p)
  
 ```
 
+
+# Comparing different data sizes
+
+Comparing the peromance of the differnt queries among different sizes of dataset. We notice that the increased size has an import impact on the time. PySpark is suffering more by the increased size, mainly for Row and Column Operations, while Scala language shows a better performance. 
+We can see 
+
+```{r}
+filtered= merged_data
+
+ p=ggplot(data=filtered, aes_string(x='Dataset',y=targetVar,color='Language',fill='Language')) + 
+   geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape=outliersShape) +
+   scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))) +
+   facet_grid(Type~Setup,scales='free',switch='y') 
+ ggplot_colors(p,strip_angle=180)
+ 
+
+```
 
 # Comparing Query Types
 
@@ -214,33 +245,19 @@ As expected, the slowest queries are the Aggregate one,while the fastest ones ar
 ```{r fig.height=4, fig.width=8}
 
 filtered=merged_data  
-filtered$Type = forcats::fct_reorder(filtered$Type,filtered$TimeTaken,.fun=median,desc=F)
-p=ggplot(data=filtered, aes(x=Type,y=TimeTaken,color=Language,fill=Language)) + 
-  geom_boxplot(outlier.size = 0.1,size=0.1)   +
- ggplot2::coord_flip() +
- facet_wrap(~Setup)
+filtered$Type = forcats::fct_reorder(filtered$Type,filtered[[targetVar]],.fun=median,desc=F)
+p=ggplot(data=filtered, aes_string(x='Type',y=targetVar,color='Language',fill='Language')) + 
+  geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape=outliersShape)   +
+  scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))) +
+  facet_wrap(~Setup) +
+  #ggplot2::coord_cartesian(xlim=c(0,max(filtered[[targetVar]])*.5))+ 
+  ggplot2::coord_flip() 
+  
  #facet_grid(Setup~Type)
 
 ggplot_colors(p)  
 ```
 
-# Comparing different data sizes
-
-Comparing the peromance of the differnt queries among different sizes of dataset. We notice that the increased size has an import impact on the time. PySpark is suffering more by the increased size, mainly for Row and Column Operations, while Scala language shows a better performance. 
-We can see 
-
-```{r}
-filtered= merged_data
-
- p=ggplot(data=filtered, aes(x=Dataset,y=TimeTaken,color=Language,fill=Language)) + 
-    geom_boxplot(outlier.size = 0.1,size=0.1) +
-   #ggplot2::stat_summary(aes(group=Language),fun.y=median,geom='line' )+
-   #facet_wrap(~Type,scales='free_y') + 
-   #facet_grid(Setup~Type)
-   facet_grid(Type~Setup,scales='free')
- ggplot_colors(p)
-    
-```
 
 
 # Comparing Queries
@@ -252,20 +269,38 @@ When analyzing the data by single query, we see that Scla outperfom Pyspark on s
 Scala looks more stable on the perfomacne among the Databricks environemnt
 ```{r}
 #functions
-plot_operations = function(filtered){
-  filtered$Operation = forcats::fct_reorder(filtered$Operation,filtered$TimeTaken,.fun=median,desc=F)
-p=
-  ggplot(data=filtered, aes(x=Dataset,y=TimeTaken,color=Language)) + 
+plot_operations = function(filtered,onlySignificant = T){
+  filtered$Operation = forcats::fct_reorder(filtered$Operation,filtered[[targetVar]],.fun=median,desc=F)
+  
+  form=as.formula(paste0(targetVar,' ~ Dataset*Operation*Language ')) #we need fukk interaction,
+  model = lm(data=filtered, formula=form)
+  modelS=summary(model)
+  #print(modelS)
+  if(onlySignificant) {
+    #find which operation is isgnificant in the interactive terms
+    keep=  names(modelS$coefficients[,4])[modelS$coefficients[,4]<0.05]
+    oper = unique(filtered$Operation)
+    keep=oper[which(sapply(oper,function(x){any(grepl(x,keep,fixed=T))}))] #this does a grepl fo each operation in the significant variables
+    data2 = filtered[filtered$Operation %in% keep,]
+    print("Only Significant Elements")
+    if(nrow(data2)==0) {print("No Significant Elements") ; return()}
+  } else {
+    print("All Elements")
+    data2=filtered
+    }
+p=  ggplot(data=data2, aes_string(x='Dataset',y=targetVar,color='Language')) + 
   ggplot2::stat_summary(aes(group=Language),fun.y=median,geom='line',size=.5 )+
   #ggplot2::stat_summary(aes(group=Language),fun.y=median,geom='point',size=.5 )+
   geom_jitter(alpha=0.5,size=.5,width=0.1)+
+  #scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))) +
   #geom_boxplot(outlier.size = 0.1,size=0.1) +
   #ggplot2::coord_flip() +
   facet_wrap(~Operation,scales='free',ncol=4,labeller = label_wrap_gen()) 
 
   #facet_grid(Operation~Setup,scales='free')
 
-ggplot_colors(p,legend.position = 'bottom')  
+ggplot_colors(p,legend.position = 'bottom')
+       
 }
 ```
 
@@ -273,23 +308,27 @@ ggplot_colors(p,legend.position = 'bottom')
 ```{r fig.height=5}
 
 filtered=merged_data %>% filter(Type=='Row Operation') 
-  
 
-plot_operations(filtered)
+plot_operations(filtered,F)
+plot_operations(filtered,T)
+
+
 ```
 
 ## Comparing Columns operations
 Column Operations shows that Databricks has wider variance than Local Machine
 The lenaguges have similar perfomance with few cases when Scala outperfom PySpakr (Full outer Join 5 Columns)
 
-```{r fig.height=9 }
+```{r fig.height=11 }
 
 filtered=merged_data %>% filter(Type=='Column Operation'
                                 ,! Operation %in%  c('Full Outer Join 3 Columns'
                                                       ,'Left Outer Join 3 Columns'
                                                       ,'Inner Join 3 Columns')
 )
-plot_operations(filtered)
+
+plot_operations(filtered,onlySignificant = F)
+plot_operations(filtered,onlySignificant = T)
 
     
 ```
@@ -301,7 +340,8 @@ Scala is faster than PySpark
 ```{r fig.height=3, fig.width=7}
 
 filtered=merged_data %>% filter(Type=='Aggregate Operation')
-plot_operations(filtered)
+plot_operations(filtered,onlySignificant = F)
+plot_operations(filtered,onlySignificant = T)
 
     
 ```
@@ -313,7 +353,8 @@ Scala is faster than PySpark
 ```{r fig.height=3, fig.width=8}
 
 filtered=merged_data %>% filter(Type=='Mixed Operation')
-plot_operations(filtered)
+plot_operations(filtered,onlySignificant = F)
+plot_operations(filtered,onlySignificant = T)
 
     
 ```
@@ -321,13 +362,13 @@ plot_operations(filtered)
 # Comparing Runs operations
 slight improvement with additonal runs (not statistically significant)
 
-```{r fig.height=3}
+```{r fig.height=3, fig.width=6}
 
-filtered=merged_data 
-filtered$Operation = forcats::fct_reorder(filtered$RunID,filtered$TimeTaken,.fun=median,desc=F)
-p=ggplot(data=filtered, aes(x=RunID,y=TimeTaken,fill=Language,color=Language)) + 
-  geom_boxplot(outlier.size = 0.5,size=0.5,alpha=0.6)  +
-  ggplot2::coord_cartesian(ylim=c(0,200))
+filtered=data_raw 
+filtered$Operation = forcats::fct_reorder(filtered$RunID,filtered[[targetVar]],.fun=median,desc=F)
+p=ggplot(data=filtered, aes_string(x='RunID',y=targetVar,fill='Language',color='Language')) + 
+  geom_boxplot(outlier.size = 0.5,size=0.5,alpha=0.6,outlier.shape = outliersShape)  +
+  scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))) 
 
 ggplot_colors(p)
 
