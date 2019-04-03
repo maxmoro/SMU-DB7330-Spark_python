@@ -181,8 +181,8 @@ PySpark_vs_Scala = function(arData, arOpt=2) {
 
 ggplot_colors = function(plot,strip_angle=0,...){
   plot +
-  scale_color_manual(values=c("#33a02c","#1f78b4"),breaks=c('PySpark','Scala'))+
-  scale_fill_manual(values=c("#b2df8a","#a6cee3"),breaks=c('PySpark','Scala'))+
+  scale_color_manual(values=c("#ca0020","#0571b0"),breaks=c('PySpark','Scala'))+
+  scale_fill_manual(values=c("#f4a582","#92c5de"),breaks=c('PySpark','Scala'))+
     theme_light() +
     ggplot2::theme(strip.text.y=element_text(angle=strip_angle)
                    ,...)
@@ -224,15 +224,49 @@ p=ggplot(data=filtered, aes_string(x='Setup',y=targetVar,color='Language',fill='
 Comparing the peromance of the differnt queries among different sizes of dataset. We notice that the increased size has an import impact on the time. PySpark is suffering more by the increased size, mainly for Row and Column Operations, while Scala language shows a better performance. 
 We can see 
 
+## All Setups
+
 ```{r}
-filtered= merged_data
+filtered= merged_data 
 
  p=ggplot(data=filtered, aes_string(x='Dataset',y=targetVar,color='Language',fill='Language')) + 
    geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape=outliersShape) +
    scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))) +
-   facet_grid(Type~Setup,scales='free',switch='y') 
- ggplot_colors(p,strip_angle=180)
- 
+   #facet_grid(Type~Setup,scales='free',switch='y',labeller=label_wrap_gen(width=10))
+   facet_wrap(~Type  ,labeller=label_wrap_gen(width=100)) 
+ ggplot_colors(p,strip_angle=0)
+
+
+```
+
+## Databricks
+
+```{r}
+filtered= merged_data %>% filter(Setup=='Databricks')
+
+ p=ggplot(data=filtered, aes_string(x='Dataset',y=targetVar,color='Language',fill='Language')) + 
+   geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape=outliersShape) +
+   scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))) +
+   #facet_grid(Type~Setup,scales='free',switch='y',labeller=label_wrap_gen(width=10))
+   facet_wrap(~Type  ,labeller=label_wrap_gen(width=100)) 
+ ggplot_colors(p,strip_angle=0)
+
+
+```
+
+## VM
+
+```{r}
+
+filtered= merged_data %>% filter(Setup=='Local VM')
+
+ p=ggplot(data=filtered, aes_string(x='Dataset',y=targetVar,color='Language',fill='Language')) + 
+   geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape=outliersShape) +
+   scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))) +
+   #facet_grid(Type~Setup,scales='free',switch='y',labeller=label_wrap_gen(width=10))
+   facet_wrap(~Type  ,labeller=label_wrap_gen(width=100)) 
+ ggplot_colors(p,strip_angle=0)
+
 
 ```
 
@@ -272,34 +306,42 @@ Scala looks more stable on the perfomacne among the Databricks environemnt
 plot_operations = function(filtered,onlySignificant = T){
   filtered$Operation = forcats::fct_reorder(filtered$Operation,filtered[[targetVar]],.fun=median,desc=F)
   
-  form=as.formula(paste0(targetVar,' ~ Dataset*Operation*Language ')) #we need fukk interaction,
-  model = lm(data=filtered, formula=form)
-  modelS=summary(model)
-  #print(modelS)
   if(onlySignificant) {
-    #find which operation is isgnificant in the interactive terms
-    keep=  names(modelS$coefficients[,4])[modelS$coefficients[,4]<0.05]
-    oper = unique(filtered$Operation)
-    keep=oper[which(sapply(oper,function(x){any(grepl(x,keep,fixed=T))}))] #this does a grepl fo each operation in the significant variables
+    
+    w<-function(oper){wilcox.test(as.formula(paste0(targetVar,' ~ Language '))
+                                  ,filtered,subset = Operation == oper)$p.value
+    }
+    ops = unique(filtered$Operation)
+    test=sapply(ops,w)
+    keep= ops[which(test < 0.05)]
     data2 = filtered[filtered$Operation %in% keep,]
-    print("Only Significant Elements")
+    
+    # #find which operation is isgnificant in the interactive terms
+    # form=as.formula(paste0(targetVar,' ~ Dataset*Operation*Language ')) #we need fukk interaction,
+    # model = lm(data=filtered, formula=form)
+    # modelS=summary(model)
+    # keep=  names(modelS$coefficients[,4])[modelS$coefficients[,4]<0.05]
+    # oper = unique(filtered$Operation)
+    # keep=oper[which(sapply(oper,function(x){any(grepl(x,keep,fixed=T))}))] #this does a grepl fo each operation in the significant variables
+    # data2 = filtered[filtered$Operation %in% keep,]
+    # print("Only Significant Elements")
     if(nrow(data2)==0) {print("No Significant Elements") ; return()}
   } else {
     print("All Elements")
     data2=filtered
-    }
-p=  ggplot(data=data2, aes_string(x='Dataset',y=targetVar,color='Language')) + 
-  ggplot2::stat_summary(aes(group=Language),fun.y=median,geom='line',size=.5 )+
-  #ggplot2::stat_summary(aes(group=Language),fun.y=median,geom='point',size=.5 )+
-  geom_jitter(alpha=0.5,size=.5,width=0.1)+
-  #scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))) +
-  #geom_boxplot(outlier.size = 0.1,size=0.1) +
-  #ggplot2::coord_flip() +
-  facet_wrap(~Operation,scales='free',ncol=4,labeller = label_wrap_gen()) 
-
+  }
+  p=  ggplot(data=data2, aes_string(x='Dataset',y=targetVar,color='Language')) + 
+    ggplot2::stat_summary(aes(group=Language),fun.y=median,geom='line',size=.5 )+
+    #ggplot2::stat_summary(aes(group=Language),fun.y=median,geom='point',size=.5 )+
+    geom_jitter(alpha=0.5,size=.5,width=0.1)+
+    #scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))) +
+    #geom_boxplot(outlier.size = 0.1,size=0.1) +
+    #ggplot2::coord_flip() +
+    facet_wrap(~Operation,scales='free',ncol=4,labeller = label_wrap_gen()) 
+  
   #facet_grid(Operation~Setup,scales='free')
-
-ggplot_colors(p,legend.position = 'bottom')
+  
+  ggplot_colors(p,legend.position = 'bottom')
        
 }
 ```
