@@ -15,9 +15,9 @@ params:
   
   
 ---
-Add MB/s
+
 Remove the Comparying Query Type as is duplicated with comparing Engironemnt
-Sort Operations alphabetically
+
 ```{r setup, include=FALSE}
 
 
