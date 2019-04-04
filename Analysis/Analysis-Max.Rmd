@@ -15,8 +15,12 @@ params:
   
   
 ---
-
+Add MB/s
+Remove the Comparying Query Type as is duplicated with comparing Engironemnt
+Sort Operations alphabetically
 ```{r setup, include=FALSE}
+
+
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -304,6 +308,7 @@ Scala looks more stable on the perfomacne among the Databricks environemnt
 ```{r}
 #functions
 plot_operations = function(filtered,onlySignificant = T){
+  
   filtered$Operation = forcats::fct_reorder(filtered$Operation,filtered[[targetVar]],.fun=median,desc=F)
   
   if(onlySignificant) {
@@ -330,9 +335,9 @@ plot_operations = function(filtered,onlySignificant = T){
     print("All Elements")
     data2=filtered
   }
-  p=  ggplot(data=data2, aes_string(x='Dataset',y=targetVar,color='Language')) + 
+  data2$Operation = factor(data2$Operation)
+  p=  ggplot(data=data2, aes_string(x='Dataset',y=targetVar,color='Language',shape='Setup')) + 
     ggplot2::stat_summary(aes(group=Language),fun.y=median,geom='line',size=.5 )+
-    #ggplot2::stat_summary(aes(group=Language),fun.y=median,geom='point',size=.5 )+
     geom_jitter(alpha=0.5,size=.5,width=0.1)+
     #scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))) +
     #geom_boxplot(outlier.size = 0.1,size=0.1) +
@@ -353,6 +358,10 @@ filtered=merged_data %>% filter(Type=='Row Operation')
 
 plot_operations(filtered,F)
 plot_operations(filtered,T)
+message("Databricks")
+plot_operations(filter(filtered,Setup=='Databricks') ,onlySignificant = T)
+message("Local VM")
+plot_operations(filter(filtered,Setup=='Local VM') ,onlySignificant = T)
 
 
 ```
@@ -371,6 +380,11 @@ filtered=merged_data %>% filter(Type=='Column Operation'
 
 plot_operations(filtered,onlySignificant = F)
 plot_operations(filtered,onlySignificant = T)
+message("Databricks")
+plot_operations(filter(filtered,Setup=='Databricks') ,onlySignificant = T)
+message("Local VM")
+plot_operations(filter(filtered,Setup=='Local VM') ,onlySignificant = T)
+
 
     
 ```
@@ -384,8 +398,10 @@ Scala is faster than PySpark
 filtered=merged_data %>% filter(Type=='Aggregate Operation')
 plot_operations(filtered,onlySignificant = F)
 plot_operations(filtered,onlySignificant = T)
-
-    
+message("Databricks")
+plot_operations(filter(filtered,Setup=='Databricks') ,onlySignificant = T)
+message("Local VM")
+plot_operations(filter(filtered,Setup=='Local VM') ,onlySignificant = T)
 ```
 
 
@@ -395,9 +411,12 @@ Scala is faster than PySpark
 ```{r fig.height=3, fig.width=8}
 
 filtered=merged_data %>% filter(Type=='Mixed Operation')
-plot_operations(filtered,onlySignificant = F)
+plot_operations(filtered,onlySignificant = F) #show everything
 plot_operations(filtered,onlySignificant = T)
-
+message("Databricks")
+plot_operations(filter(filtered,Setup=='Databricks') ,onlySignificant = F)
+message("Local VM")
+plot_operations(filter(filtered,Setup=='Local VM') ,onlySignificant = F)
     
 ```
 
