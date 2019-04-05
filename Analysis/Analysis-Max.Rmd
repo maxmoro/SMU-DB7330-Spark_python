@@ -10,7 +10,7 @@ output:
    toc_depth: 3
 params:
   options: 0 # 1 for Row, 2 for columns, 3 for Mixed + Aggregate
-  targetVar: 'TimeTaken' #Throughput, TimeTaken
+  targetVar: 'Throughput' #Throughput, TimeTaken
   showOutliers: FALSE 
   
   
@@ -194,13 +194,14 @@ Comparing the peromance of the differnt queries among different sizes of dataset
 We can see 
 
 ```{r}
-plotDataSize=function(filtered){
+plotDataSize=function(filtered,title){
   t = filtered
    p=ggplot(data=t, aes_string(x='Dataset',y=targetVar,color='Language',fill='Language')) + 
      geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape=outliersShape) +
      scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))
                         ,labels=scales::comma_format(accuracy=1,suffix=targetUnits)) +
-     facet_wrap(~Type ,labeller=label_wrap_gen(width=100)) 
+     facet_wrap(~Type ,labeller=label_wrap_gen(width=100),scales='free_x')  +
+     ggplot2::ggtitle(title)
    
    ggplot_colors(p,strip_angle=0
                  ,axis.text.y=element_text(size=7)
@@ -214,21 +215,21 @@ plotDataSize=function(filtered){
 ```{r}
 filtered= merged_data   
 
-plotDataSize(filtered)
+plotDataSize(filtered,'Comparing Datsets - All Environments')
 ```
 
 ## Databricks
 
 ```{r}
 filtered= merged_data %>% filter(Setup=='Databricks')
-plotDataSize(filtered)
+plotDataSize(filtered,'Comparing Datsets - Databrick (AWS)')
 ```
 
 ## VM
 
 ```{r}
-filtered= merged_data %>% filter(Setup=='Local VM')
-plotDataSize(filtered)
+filtered= merged_data %>% dplyr::filter(Setup=='Local VM')
+plotDataSize(filtered,'Comparing Datsets - Local VM')
 ```
 
 # Comparing Query Types
@@ -322,10 +323,12 @@ filtered=merged_data %>% filter(Type=='Column Operation'
                                                       ,'Inner Join 3 Columns')
 )
 plot_operations(filtered,title='Combined Environments')
+```
+
+```{r fig.height=7}
+
 plot_operations(filter(filtered,Setup=='Databricks'),title='Databricks')
 plot_operations(filter(filtered,Setup=='Local VM'),title='Local VM')
-
-
 
     
 ```
