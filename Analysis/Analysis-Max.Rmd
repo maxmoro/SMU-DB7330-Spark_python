@@ -315,7 +315,7 @@ plot_operations(filter(filtered,Setup=='Local VM'),title='Local VM')
 Column Operations shows that Databricks has wider variance than Local Machine
 The lenaguges have similar perfomance with few cases when Scala outperfom PySpakr (Full outer Join 5 Columns)
 
-```{r fig.height=11 }
+```{r fig.height=8 }
 
 filtered=merged_data %>% filter(Type=='Column Operation'
                                 ,! Operation %in%  c('Full Outer Join 3 Columns'
@@ -323,21 +323,16 @@ filtered=merged_data %>% filter(Type=='Column Operation'
                                                       ,'Inner Join 3 Columns')
 )
 plot_operations(filtered,title='Combined Environments')
-```
-
-```{r fig.height=7}
-
 plot_operations(filter(filtered,Setup=='Databricks'),title='Databricks')
 plot_operations(filter(filtered,Setup=='Local VM'),title='Local VM')
-
-    
 ```
+
 
 
 ## Comparing Aggregate operations
 Scala is faster than PySpark
 
-```{r fig.height=3, fig.width=7}
+```{r fig.height=3, fig.width=9}
 
 filtered=merged_data %>% filter(Type=='Aggregate Operation')
 plot_operations(filtered,title='Combined Environments')
