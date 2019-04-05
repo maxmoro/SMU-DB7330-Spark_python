@@ -10,7 +10,7 @@ output:
    toc_depth: 3
 params:
   options: 0 # 1 for Row, 2 for columns, 3 for Mixed + Aggregate
-  targetVar: 'Throughput' #Throughput, TimeTaken
+  targetVar: 'TimeTaken' #Throughput, TimeTaken
   showOutliers: FALSE 
   
   
