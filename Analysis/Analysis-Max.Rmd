@@ -18,9 +18,7 @@ params:
 
 
 
-- create a table per each chart set
-- group queries by sub-type (sorting.. merging)
-- chanrts with two cols
+ 
 
 ```{r setup, include=FALSE}
 
@@ -340,12 +338,12 @@ plot_operations = function(filtered,title,ncol=plotCols,autoSize = ~(.Platform$G
 }
 
 getTable = function(data){
-    t=data %>% group_by(subType,Operation,Dataset,Language) %>%
+    t=data %>% group_by(subType,Operation,Language) %>%
       summarise_at(.vars=targetVar,.funs=vars(mean)) %>%
       ungroup() %>%
       spread(key=Language,value=targetVar) %>%
       mutate(delta = PySpark-Scala)
-    knitr::kable(t,digits=2,col.names=c('Category','Operation','Dataset','PySpark (sec)','Scala (sec)','PySpark - Scala'),padding=0,format='markdown')
+    knitr::kable(t,digits=2,col.names=c('Category','Operation','PySpark (sec)','Scala (sec)','PySpark - Scala'),padding=0,format='markdown')
 }
 
 ```
