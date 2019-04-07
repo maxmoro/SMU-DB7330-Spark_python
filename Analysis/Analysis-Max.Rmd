@@ -16,7 +16,11 @@ params:
   
 ---
 
-Remove the Comparying Query Type as is duplicated with comparing Engironemnt
+
+
+- create a table per each chart set
+- group queries by sub-type (sorting.. merging)
+- chanrts with two cols
 
 ```{r setup, include=FALSE}
 
@@ -31,6 +35,8 @@ library(htmltools)
 
 ```
 
+# Setup #
+
 
 ```{r}
 options = params$options
@@ -39,6 +45,8 @@ targetUnits = ifelse(targetVar=='Throughput','MB/s','secs')
 showOutliers = params$showOutliers
 outliersQuantile = ifelse(showOutliers, 1 ,0.90)  #use 1.0 to include all outliers
 outliersShape = ifelse(showOutliers,  19,NA)  
+plotCols=2
+
 
 ```
 
@@ -92,6 +100,19 @@ merged_data$Dataset = as.factor(merged_data$Dataset)
 merged_data$Operation = trimws(as.character(merged_data$Operation),'both')
 merged_data[merged_data$Operation =='Mathematical Operations on Columns',]$Operation ='Mathematical Operation on Columns'
 
+merged_data$subType = ''
+merged_data[grepl('^Sorting',merged_data$Operation),]$subType = 'Sorting'
+merged_data[grepl('^Ranking',merged_data$Operation),]$subType = 'Ranking'
+merged_data[grepl('^Split',merged_data$Operation),]$subType = 'Splitting'
+merged_data[grepl('^GroupBy',merged_data$Operation),]$subType = 'Grouping'
+merged_data[grepl(' Join ',merged_data$Operation),]$subType = 'Joining'
+merged_data[grepl('^Merge',merged_data$Operation),]$subType = 'Merging'
+merged_data[grepl('^Filter',merged_data$Operation),]$subType = 'Filtering'
+merged_data[grepl('^Mathematical',merged_data$Operation),]$subType = 'Mathematics'
+merged_data[grepl('^Pivot',merged_data$Operation),]$subType = 'Pivots'
+merged_data[grepl('^Running|^Shift',merged_data$Operation),]$subType = 'Run/Shift'
+merged_data[grepl('^Writing',merged_data$Operation),]$subType = 'Writing'
+
 ```
 
 ```{r}
@@ -128,37 +149,34 @@ merged_data = merged_data %>%
 str(merged_data)
 head(merged_data)
 summary(merged_data)
+
+print(!(.Platform$GUI == "RStudio"))
 ```
 
 # Common Functions
 ```{r}
-summarize_results = function(grouped_data){
-  rv = grouped_data %>%
-    summarise(n = n()
-            ,Mean_Time = round(mean(TimeTaken),2)
-            ,Std_Dev_Time= round(sd(TimeTaken),2)
-            ,Coeff_Var_Time = round(Mean_Time/Std_Dev_Time,2)
-            ,Mean_Throughput = round(mean(Throughput),2)
-            ,Std_Dev_Throughput= round(sd(Throughput),2)
-            ,Coeff_Var_Throughput = round(Mean_Throughput/Std_Dev_Throughput,2)
-            )
-  return(rv)  
+subchunkify_clear <- function() {
+  files=dir(path='figure/',pattern='sub_chunk_',include.dirs=T,full.names = T)
+  all(file.remove(files))
 }
 
-plot_hist = function(grouped_data, by_var){
-  indices = grouped_data %>%
-    dplyr::group_indices() %>%
-    as.factor()
-
-  grouped_data$Index = as.factor(indices)
-  facet_form = as.formula(paste( "~" , paste(grouped_data %>% dplyr::group_vars(), collapse = " + "), sep = ""))
+subchunkify <- function(g, fig_height=7, fig_width=5, enabled = !(.Platform$GUI == "RStudio")) {
+  if (enabled==FALSE) return(plot(g))
+  g_deparsed <- paste0(deparse(
+    function() {g}
+  ), collapse = '')
   
-  print(ggplot(grouped_data, aes_string(x = "Index", y = "TimeTaken", fill=by_var)) + 
-    geom_boxplot() + 
-    facet_wrap(facet_form  , scales = 'free',ncol=4, labeller = label_both))
+  sub_chunk <- paste0("
+  `","``{r sub_chunk_", floor(runif(1) * 10000), ", fig.height=", fig_height, ", fig.width=", fig_width, ", echo=FALSE}",
+  "\n(", 
+    g_deparsed
+    , ")()",
+  "\n`","``
+  ")
   
-  return(grouped_data)
+  cat(knitr::knit(text = knitr::knit_expand(text = sub_chunk), quiet = TRUE))
 }
+
 
 ggplot_colors = function(plot,strip_angle=0,...){
   plot +
@@ -177,6 +195,7 @@ ggplot_colors = function(plot,strip_angle=0,...){
 using a simple LM we can identify the elements that contribute to the speed of the queries, we see Scala  has a coeffiecnet of -7, meaning that it bring an overall benefits of 7 seconds, keeping constant the other variables. 
 
 ```{r}
+subchunkify_clear()
 form=as.formula(paste0(targetVar,' ~ Dataset + Language  + Operation + Setup'))
 model = lm(data=merged_data,formula=form)
 summary(model)
@@ -195,7 +214,7 @@ p=ggplot(data=filtered, aes_string(x='Setup',y=targetVar,color='Language',fill='
     geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape = outliersShape) +
   scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))
                      ,labels=scales::comma_format(accuracy=1,suffix=targetUnits)) +
-   facet_wrap(~Type,scales='free') 
+   facet_wrap(~Type,scales='free',ncol=plotCols) 
   ggplot_colors(p,axis.text.y=element_text(size=7),legend.position='right')
  
 ```
@@ -213,7 +232,7 @@ plotDataSize=function(filtered,title){
      geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape=outliersShape) +
      scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))
                         ,labels=scales::comma_format(accuracy=1,suffix=targetUnits)) +
-     facet_wrap(~Type ,labeller=label_wrap_gen(width=100),scales='free_x')  +
+     facet_wrap(~Type ,labeller=label_wrap_gen(width=100),scales='free_x',ncol=plotCols)  +
      ggplot2::ggtitle(title)
    
    ggplot_colors(p,strip_angle=0
@@ -260,7 +279,7 @@ p=ggplot(data=filtered, aes_string(x='Type',y=targetVar,color='Language',fill='L
   geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape=outliersShape)   +
   scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))
                      ,labels=scales::comma_format(accuracy=1,suffix=targetUnits)) +
-  facet_wrap(~Setup) +
+  facet_wrap(~Setup,ncol=3) +
   ggplot2::coord_flip() 
 
 ggplot_colors(p,axis.text.x=element_text(size=8)
@@ -272,11 +291,6 @@ ggplot_colors(p,axis.text.x=element_text(size=8)
 
 # Comparing Queries
 
-## Comparing Row operations
-
-When analyzing the data by single query, we see that Scla outperfom Pyspark on specifi queries, like Running Sums and Shift. Other queries show a lower median for Scala, but not significant
-
-Scala looks more stable on the perfomacne among the Databricks environemnt
 ```{r}
 #functions
 plot_get_significant = function(filtered){
@@ -286,65 +300,93 @@ plot_get_significant = function(filtered){
     test=sapply(ops,w)
     keep= ops[which(test < 0.025)]
     data2 = filtered[filtered$Operation %in% keep,]
-    if(nrow(data2)==0) {print("No Significant Elements") ; return()}
+    if(nrow(data2)==0) {message("No Significant Elements") ; return(NULL)}
     return(data2)
 }
-plot_operations_get = function(filtered,title=''){
+plot_operations_get = function(filtered,title='',subtitle='',ncol = plotCols){
   if(is.null(filtered)) return(ggplot(data=filtered)+geom_blank())
-  plotData = filtered %>%
-    mutate(Operation = factor(Operation))
-  p=  ggplot(data=plotData, aes_string(x='Dataset',y=targetVar,color='Language',shape='Setup')) + 
+  plotData = filtered %>% mutate(Operation = factor(Operation))
+  p=  ggplot(data=plotData, aes_string(x='Dataset',y=targetVar,color='Language')) + 
     ggplot2::stat_summary(aes(group=Language),fun.y=median,geom='line',size=.5 )+
     geom_jitter(alpha=0.5,size=.5,width=0.1)+
     scale_y_continuous(labels=scales::comma_format(accuracy=1,suffix=targetUnits)) +
-    facet_wrap(~Operation,scales='free',ncol=4,labeller = label_wrap_gen()) +
-    ggplot2::ggtitle(title)
+    facet_wrap(~ Operation,scales='free',ncol=ncol,labeller = label_wrap_gen(width = round(100/ncol))) +
+    #facet_grid(Operation~subType,scales='free',labeller = label_wrap_gen()) +
+    ggplot2::ggtitle(title,subtitle=subtitle)
   
   ggplot_colors(p,legend.position = 'bottom'
                 ,axis.text.x=element_text(size=8,angle=45,hjust=1)
                 ,axis.text.y=element_text(size=8)
+                ,strip.background = element_rect(fill='#636363')
                 )
        
 }
-plot_operations = function(filtered,title){
-  list(All= plot_operations_get(filtered
-                                 ,title=paste0(title,' - All Operations'))
-       ,Significant = plot_operations_get(plot_get_significant(filtered)
-                                         ,title=paste0(title,' - Only Significant Operations'))
-  )
+plot_operations = function(filtered,title,ncol=plotCols,autoSize = ~(.Platform$GUI == "RStudio")){
+  
+  
+  
+  for (st in sort(unique(filtered$subType))){
+    data=filter(filtered,subType==st)
+    p=plot_operations_get(data,title=paste0(title,' - ' , st),subtitle=' (All Operations) ')
+    subchunkify(p, fig_height=ceiling(n_distinct(data$Operation)/plotCols)*3+.5, fig_width=plotCols*3) 
+    
+    data=plot_get_significant(filter(filtered,subType==st))
+    if(!is.null(data))  {
+      p=plot_operations_get(data,title=paste0(title,' - ' , st ),subtitle=' (Significant Operations) ')
+      subchunkify(p, fig_height=ceiling(n_distinct(data$Operation)/plotCols)*3+.5, fig_width=plotCols*3) 
+    }
+  }
 }
+
+getTable = function(data){
+    t=data %>% group_by(subType,Operation,Dataset,Language) %>%
+      summarise_at(.vars=targetVar,.funs=vars(mean)) %>%
+      ungroup() %>%
+      spread(key=Language,value=targetVar) %>%
+      mutate(delta = PySpark-Scala)
+    knitr::kable(t,digits=2,col.names=c('Category','Operation','Dataset','PySpark (sec)','Scala (sec)','PySpark - Scala'),padding=0,format='markdown')
+}
+
 ```
 
+## Comparing Row operations
 
-```{r fig.height=5}
-title = 'Comparing Rows Operations'
+```{r echo=FALSE, results='asis'}
+#subchunkify
+title = 'Rows Operations'
+print(htmltools::h4(paste0(title,' - All Environments: ')))
 filtered=merged_data %>% filter(Type=='Row Operation') 
-plot_operations(filtered,title=paste0(title,' - Combined Environments'))
-for(s in Setups){
-  t=plot_operations(filtered=filter(filtered,Setup==s),title=paste0(title,' - ',s))
-  plot(t$All)
-  plot(t$Significant)
-}
+print(getTable(filtered))
+plot_operations(filtered,title=paste0(title,' - All Environments'),ncol=plotCols)
+
+for(s in Setups) {
+  print(htmltools::h4(paste0(title,' - Setup: ',s)))
+  print(getTable(filter(filtered,Setup==s)))
+  plot_operations(filtered=filter(filtered,Setup==s),title=paste0(title,' - ',s))
+} 
 
 ```
 
 ## Comparing Columns operations
-Column Operations shows that Databricks has wider variance than Local Machine
-The lenaguges have similar perfomance with few cases when Scala outperfom PySpakr (Full outer Join 5 Columns)
 
-```{r fig.height=8 }
-title = 'Comparing Columns Operations'
+
+
+```{r echo=FALSE, results='asis'}
+title = 'Columns Operations'
+print(htmltools::h4(paste0(title,' - All Environments: ')))
 filtered=merged_data %>% filter(Type=='Column Operation'
                                 ,! Operation %in%  c('Full Outer Join 3 Columns'
                                                       ,'Left Outer Join 3 Columns'
                                                       ,'Inner Join 3 Columns')
 )
-plot_operations(filtered,title=paste0(title,' - Combined Environments'))
-for(s in Setups){
-  t=plot_operations(filtered=filter(filtered,Setup==s),title=paste0(title,' - ',s))
-  plot(t$All)
-  plot(t$Significant)
-}
+print(getTable(filtered))
+plot_operations(filtered,title=paste0(title,' - All Environments'))
+
+for(s in Setups) {
+  print(htmltools::h4(paste0(title,' - Setup:',s)))
+  print(getTable(filter(filtered,Setup==s)))
+  plot_operations(filtered=filter(filtered,Setup==s),title=paste0(title,' - ',s))
+} 
 ```
 
 
@@ -352,40 +394,42 @@ for(s in Setups){
 ## Comparing Aggregate operations
 Scala is faster than PySpark
 
-```{r fig.height=3, fig.width=9}
-title = 'Comparing Aggregate Operations'
+```{r echo=FALSE, results='asis'}
+title = 'Aggregate Operations'
+print(htmltools::h4(paste0(title,' - All Environments: ')))
 filtered=merged_data %>% filter(Type=='Aggregate Operation')
-plot_operations(filtered,title=paste0(title,' - Combined Environments'))
-for(s in Setups){
-  t=plot_operations(filtered=filter(filtered,Setup==s),title=paste0(title,' - ',s))
-  plot(t$All)
-  plot(t$Significant)
-}
+print(getTable(filtered))
+plot_operations(filtered,title=paste0(title,' - All Environments'))
 
-
+for(s in Setups) {
+  print(htmltools::h4(paste0(title,' - Setup: ',s)))
+  print(getTable(filter(filtered,Setup==s)))
+  plot_operations(filtered=filter(filtered,Setup==s),title=paste0(title,' - ',s))
+} 
 ```
 
 
 ## Comparing Mixed operations
 Scala is faster than PySpark
 
-```{r fig.height=3, fig.width=8}
-title = 'Comparing Mixed Operations'
+```{r echo=FALSE, results='asis'}
+title = 'Mixed Operations'
+print(htmltools::h4(paste0(title,' - All Environments: ')))
 filtered=merged_data %>% filter(Type=='Mixed Operation')
-plot_operations(filtered,title=paste0(title,' - Combined Environments'))
-for(s in Setups){
-  t=plot_operations(filtered=filter(filtered,Setup==s),title=paste0(title,' - ',s))
-  plot(t$All)
-  plot(t$Significant)
-}
+print(getTable(filtered))
+plot_operations(filtered,title=paste0(title,' - All Environments'))
 
+for(s in Setups) {
+  print(htmltools::h4(paste0(title,' - Setup: ',s)))
+  print(getTable(filter(filtered,Setup==s)))
+  plot_operations(filtered=filter(filtered,Setup==s),title=paste0(title,' - ',s))
+} 
 ```
 
 # Comparing Runs operations
 slight improvement with additonal runs (not statistically significant)
 
 ```{r fig.height=3, fig.width=6}
-
 filtered=data_raw 
 filtered$Operation = forcats::fct_reorder(filtered$RunID,filtered[[targetVar]],.fun=median,desc=F)
 p=ggplot(data=filtered, aes_string(x='RunID',y=targetVar,fill='Language',color='Language')) + 
@@ -398,7 +442,6 @@ ggplot_colors(p)
 ## By Setup
 
 ```{r fig.height=6, fig.width=6}
-
 p=ggplot(data=filtered, aes_string(x='RunID',y=targetVar,fill='Language',color='Language')) + 
   geom_boxplot(outlier.size = 0.5,size=0.5,alpha=0.6,outlier.shape = outliersShape)  +
   scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))
