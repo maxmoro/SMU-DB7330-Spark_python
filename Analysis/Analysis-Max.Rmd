@@ -19,10 +19,8 @@ params:
 
 
  
-
+`r htmltools::HTML(paste0('<style type="text/css">div.main-container {max-width:100%;}</style>'))`
 ```{r setup, include=FALSE}
-
-
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -318,32 +316,55 @@ plot_operations_get = function(filtered,title='',subtitle='',ncol = plotCols){
                 ,axis.text.y=element_text(size=8)
                 #,strip.background = element_rect(fill='#636363')
                 )
-       
 }
-plot_operations = function(filtered,title,ncol=plotCols,autoSize = ~(.Platform$GUI == "RStudio")){
+plot_operations_get = function(filtered,title='',subtitle='',ncol = plotCols,facets='Operation'){
+  if(is.null(filtered)) return(ggplot(data=filtered)+geom_blank())
+  plotData = filtered %>% mutate(Operation = factor(Operation))
+  p=  ggplot(data=plotData, aes_string(x='Dataset',y=targetVar,color='Language')) + 
+    ggplot2::stat_summary(aes(group=Language),fun.y=median,geom='line',size=.5 )+
+    geom_jitter(alpha=0.5,size=.5,width=0.1)+
+    scale_y_continuous(labels=scales::comma_format(accuracy=1,suffix=targetUnits)) +
+    facet_wrap(facets,scales='free',ncol=ncol,labeller = label_wrap_gen(width = round(100/ncol))) +
+    #facet_grid(Operation~subType,scales='free',labeller = label_wrap_gen()) +
+    ggplot2::ggtitle(title,subtitle=subtitle)
   
-  
+  ggplot_colors(p,legend.position = 'bottom'
+                ,axis.text.x=element_text(size=8,angle=45,hjust=1)
+                ,axis.text.y=element_text(size=8)
+                #,strip.background = element_rect(fill='#636363')
+                )
+}
+plot_operations = function(filtered,title,ncol=plotCols){
   
   for (st in sort(unique(filtered$subType))){
     data=filter(filtered,subType==st)
-    p=plot_operations_get(data,title=paste0(title,' - ' , st),subtitle=' (All Operations) ')
-    subchunkify(p, fig_height=ceiling(n_distinct(data$Operation)/plotCols)*3+.5, fig_width=plotCols*3) 
+    p=plot_operations_get(data,title=paste0(title,' - ' , st),subtitle=' (All Operations) ',ncol=ncol)
+    subchunkify(p, fig_height=ceiling(n_distinct(data$Operation)/ncol)*2.5+.5, fig_width=plotCols*3) 
     
     data=plot_get_significant(filter(filtered,subType==st))
     if(!is.null(data))  {
-      p=plot_operations_get(data,title=paste0(title,' - ' , st ),subtitle=' (Significant Operations) ')
-      subchunkify(p, fig_height=ceiling(n_distinct(data$Operation)/plotCols)*3+.5, fig_width=plotCols*3) 
+      p=plot_operations_get(data,title=paste0(title,' - ' , st ),subtitle=' (Significant Operations) ',ncol=ncol)
+      subchunkify(p, fig_height=ceiling(n_distinct(data$Operation)/ncol)*2.5+.5, fig_width=ncol*3) 
     }
   }
 }
 
+plot_environments = function(filtered,title,ncol=plotCols){
+  
+  for (st in sort(unique(filtered$subType))){
+    data=filter(filtered,subType==st)
+    p=plot_operations_get(data,title=paste0(title,' - ' , st),subtitle=' (All Operations) ',ncol=ncol,facets='Setup')
+    subchunkify(p, fig_height=ceiling(n_distinct(data$Setup)/ncol)*2.5+.5, fig_width=ncol*3) 
+    
+  }
+}
 getTable = function(data){
     t=data %>% group_by(subType,Operation,Language) %>%
       summarise_at(.vars=targetVar,.funs=vars(mean)) %>%
       ungroup() %>%
       spread(key=Language,value=targetVar) %>%
-      mutate(delta = PySpark-Scala)
-    knitr::kable(t,digits=2,col.names=c('Category','Operation','PySpark (sec)','Scala (sec)','PySpark - Scala'),padding=0,format='markdown')
+      mutate(delta = Scala/PySpark)
+    knitr::kable(t,digits=2,col.names=c('Category','Operation','PySpark (MB/sec)','Scala (MB/sec)','Scala/PySpark'),padding=0,format='markdown')
 }
 
 ```
@@ -357,12 +378,15 @@ print(htmltools::h4(paste0(title,' - All Environments: ')))
 filtered=merged_data %>% filter(Type=='Row Operation') 
 print(getTable(filtered))
 plot_operations(filtered,title=paste0(title,' - All Environments'),ncol=plotCols)
+plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
 
 for(s in Setups) {
   print(htmltools::h4(paste0(title,' - Setup: ',s)))
   print(getTable(filter(filtered,Setup==s)))
   plot_operations(filtered=filter(filtered,Setup==s),title=paste0(title,' - ',s))
 } 
+
+
 
 ```
 
@@ -380,7 +404,7 @@ filtered=merged_data %>% filter(Type=='Column Operation'
 )
 print(getTable(filtered))
 plot_operations(filtered,title=paste0(title,' - All Environments'))
-
+plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
 for(s in Setups) {
   print(htmltools::h4(paste0(title,' - Setup:',s)))
   print(getTable(filter(filtered,Setup==s)))
@@ -399,7 +423,7 @@ print(htmltools::h4(paste0(title,' - All Environments: ')))
 filtered=merged_data %>% filter(Type=='Aggregate Operation')
 print(getTable(filtered))
 plot_operations(filtered,title=paste0(title,' - All Environments'))
-
+plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
 for(s in Setups) {
   print(htmltools::h4(paste0(title,' - Setup: ',s)))
   print(getTable(filter(filtered,Setup==s)))
@@ -417,7 +441,7 @@ print(htmltools::h4(paste0(title,' - All Environments: ')))
 filtered=merged_data %>% filter(Type=='Mixed Operation')
 print(getTable(filtered))
 plot_operations(filtered,title=paste0(title,' - All Environments'))
-
+plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
 for(s in Setups) {
   print(htmltools::h4(paste0(title,' - Setup: ',s)))
   print(getTable(filter(filtered,Setup==s)))
