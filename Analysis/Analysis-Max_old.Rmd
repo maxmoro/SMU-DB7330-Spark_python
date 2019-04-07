@@ -1,0 +1,469 @@
+---
+title: "Analysis"
+author: "Nikhil Gupta"
+date: "`r Sys.time()`"
+always_allow_html: yes
+output:
+ html_document:
+   toc: true
+   toc_float: true
+   toc_depth: 3
+params:
+  options: 0 # 1 for Row, 2 for columns, 3 for Mixed + Aggregate
+  targetVar: 'Throughput' #Throughput, TimeTaken
+  showOutliers: FALSE 
+  
+  
+---
+Add MB/s
+Remove the Comparying Query Type as is duplicated with comparing Engironemnt
+Sort Operations alphabetically
+```{r setup, include=FALSE}
+
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(DT)
+library(foreach)
+library(htmltools)
+
+```
+
+```{r}
+options = params$options
+targetVar = params$targetVar
+showOutliers = params$showOutliers
+outliersQuantile = ifelse(showOutliers, 1 ,0.90)  #use 1.0 to include all outliers
+outliersShape = ifelse(showOutliers,  19,NA)  
+```
+
+
+```{r}
+read.clean.files = function(filename){
+  file = read.csv(filename, header = FALSE)
+  column.names = c("Language","Randomize","Dataset","MachineID","RunID","Type","Operation","TimeTaken")
+  colnames(file) = column.names
+  return(file)
+}
+
+files = list.files(path = "../Results/", pattern = ".csv$", recursive = TRUE, full.names = TRUE) # List all .csv files
+#files
+
+databricks.files = files[grepl("Databricks",files)]
+local.vm..files = files[grepl("Local_VM",files)]
+cluster.vm..files = files[grepl("Local_VM",files)]
+
+rows.databricks = lapply(databricks.files, read.csv, header = FALSE) # Read the files into list
+merged.databricks = do.call(rbind, rows.databricks) # combine the data.frame
+merged.databricks$Setup = 'Databricks'
+
+rows.local.vm = lapply(local.vm..files, read.csv, header = FALSE) # Read the files into list
+merged.local.vm = do.call(rbind, rows.local.vm) # combine the data.frame
+merged.local.vm$Setup = 'Local VM'
+
+rows.cluster = lapply(local.vm..files, read.csv, header = FALSE) # Read the files into list
+merged.cluster = do.call(rbind, rows.local.vm) # combine the data.frame
+merged.cluster$Setup = 'Cluster'
+
+
+merged_data = rbind(merged.databricks,merged.local.vm,merged.cluster)
+merged_data$Setup = as.factor(merged_data$Setup)
+
+column.names = c("Language","Randomize","Dataset","MachineID","RunID","Type","Operation","TimeTaken","Setup")
+colnames(merged_data) = column.names
+merged_data$Type = as.factor(gsub(pattern = "Operations", replacement = "Operation", x = merged_data$Type))
+
+# Convert columns to factors
+merged_data$MachineID = as.factor(merged_data$MachineID)
+merged_data$Randomize = as.factor(merged_data$Randomize)
+merged_data$RunID = as.factor(merged_data$RunID)
+
+merged_data$Dataset = sub("dataset_", "", merged_data$Dataset) 
+merged_data$Dataset = sub("MB$", "", merged_data$Dataset) 
+merged_data$Dataset = as.factor(merged_data$Dataset)
+
+merged_data$Operation = trimws(as.character(merged_data$Operation),'both')
+merged_data[merged_data$Operation =='Mathematical Operations on Columns',]$Operation ='Mathematical Operation on Columns'
+
+```
+
+```{r}
+size_10MB =  11.4789848327637 # file.size("../../Data/Databricks/machine2/dataset_10MB.csv")/(1024*1024)
+size_100MB = 115.640992164612 # file.size("../../Data/Databricks/machine2/dataset_100MB.csv")/(1024*1024) 
+size_200MB = 229.8573  
+size_300MB = 343.2709
+size_500MB = 576.678165435791 # file.size("../../Data/Databricks/machine2/dataset_500MB.csv")/(1024*1024) 
+
+print(paste("Actual Size of 10MB file (in MB)",size_10MB))
+print(paste("Actual Size of 100MB file (in MB)",size_100MB))
+print(paste("Actual Size of 200MB file (in MB)",size_200MB))
+print(paste("Actual Size of 300MB file (in MB)",size_300MB))
+print(paste("Actual Size of 500MB file (in MB)",size_500MB))
+
+size_info = data.frame(Dataset = c("10","100","200","300","500")
+                       ,Size = c(size_10MB,size_100MB,size_200MB,size_300MB,size_500MB))
+str(size_info)
+
+merged_data = merged_data %>%
+  merge(size_info,by='Dataset') %>%
+  mutate(Throughput = Size/TimeTaken)
+
+Setups = c(unique(as.character(filtered$Setup)))
+
+```
+
+```{r}
+
+data_raw = merged_data
+merged_data = merged_data %>% 
+    filter(RunID != 1)
+
+str(merged_data)
+head(merged_data)
+summary(merged_data)
+```
+
+
+
+# Common Functions
+```{r}
+summarize_results = function(grouped_data){
+  rv = grouped_data %>%
+    summarise(n = n()
+            ,Mean_Time = round(mean(TimeTaken),2)
+            ,Std_Dev_Time= round(sd(TimeTaken),2)
+            ,Coeff_Var_Time = round(Mean_Time/Std_Dev_Time,2)
+            ,Mean_Throughput = round(mean(Throughput),2)
+            ,Std_Dev_Throughput= round(sd(Throughput),2)
+            ,Coeff_Var_Throughput = round(Mean_Throughput/Std_Dev_Throughput,2)
+            )
+  return(rv)  
+}
+
+
+plot_hist = function(grouped_data, by_var){
+  indices = grouped_data %>%
+    dplyr::group_indices() %>%
+    as.factor()
+
+  grouped_data$Index = as.factor(indices)
+  facet_form = as.formula(paste( "~" , paste(grouped_data %>% dplyr::group_vars(), collapse = " + "), sep = ""))
+  
+  print(ggplot(grouped_data, aes_string(x = "Index", y = "TimeTaken", fill=by_var)) + 
+    geom_boxplot() + 
+    #facet_wrap(Index ~ .  , scales = 'free',ncol=4, labeller = label_both))
+    facet_wrap(facet_form  , scales = 'free',ncol=4, labeller = label_both))
+  
+  return(grouped_data)
+}
+
+databricks_vs_localVM = function(arData) {
+  result = arData %>% 
+    group_by(Type, Operation, Language, MachineID, Dataset, Setup) %>%
+    summarize_results()
+  
+  group = arData %>% 
+    group_by(Type, Operation, Language, MachineID, Dataset)
+  plot_hist(grouped_data = group, by_var = "Setup")
+  
+  return (result)
+}
+
+PySpark_vs_Scala = function(arData, arOpt=2) {
+  # 1 will only return table
+  # 2 will only plot histograms
+  # 0 will do both
+  result = NA
+  
+  if (arOpt == 1 | arOpt == 0){
+    result = arData %>% 
+      group_by(Type, Operation, Dataset, MachineID, Setup, Language) %>%
+      summarize_results()
+  }
+  
+  if (arOpt == 2 | arOpt == 0){
+    group = arData %>% 
+      group_by(Type, Operation, Dataset, MachineID, Setup)
+    plot_hist(grouped_data = group, by_var = "Language")
+  }
+  
+  return (result)
+}
+
+ggplot_colors = function(plot,strip_angle=0,...){
+  plot +
+  scale_color_manual(values=c("#ca0020","#0571b0"),breaks=c('PySpark','Scala'))+
+  scale_fill_manual(values=c("#f4a582","#92c5de"),breaks=c('PySpark','Scala'))+
+    theme_light() +
+    ggplot2::theme(strip.text.y=element_text(angle=strip_angle)
+                   ,...)
+  }
+
+
+```
+
+# Simple Linear Regression Model
+
+using a simple LM we can identify the elements that contribute to the speed of the queries, we see Scala  has a coeffiecnet of -7, meaning that it bring an overall benefits of 7 seconds, keeping constant the other variables. 
+
+```{r}
+form=as.formula(paste0(targetVar,' ~ Dataset + Language  + Operation + Setup'))
+model = lm(data=merged_data,formula=form)
+summary(model)
+```
+
+# Comparing of Environments
+
+Comparing Local VM vs. Cloud similar in configuration, controlling by the type operation.  The cloud machine is optimized for Scala and Spark, while the local machine has a standard installation of the softwars. 
+
+We notice  the DataBricks environment benefit the aggregate operation, and that Databricks beenfits the scala encironemtn for the Row Operations.
+Anyway, other sitation shows a similar perfomance across lancuages and environment
+
+```{r}
+filtered= merged_data 
+p=ggplot(data=filtered, aes_string(x='Setup',y=targetVar,color='Language',fill='Language')) + 
+    geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape = outliersShape) +
+  scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))) +
+   facet_wrap(~Type,scales='free') 
+  ggplot_colors(p)
+ 
+```
+
+
+# Comparing different data sizes
+
+Comparing the peromance of the differnt queries among different sizes of dataset. We notice that the increased size has an import impact on the time. PySpark is suffering more by the increased size, mainly for Row and Column Operations, while Scala language shows a better performance. 
+We can see 
+
+## All Setups
+
+```{r}
+filtered= merged_data 
+
+ p=ggplot(data=filtered, aes_string(x='Dataset',y=targetVar,color='Language',fill='Language')) + 
+   geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape=outliersShape) +
+   scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))) +
+   #facet_grid(Type~Setup,scales='free',switch='y',labeller=label_wrap_gen(width=10))
+   facet_wrap(~Type  ,labeller=label_wrap_gen(width=100)) +
+   ggtitle(paste0('Comparing Datasets - All Setups'))
+ plot(ggplot_colors(p,strip_angle=0))
+
+
+```
+
+## By Setup
+
+```{r}
+for (s in Setups) {
+  print(s)
+  filtered= merged_data %>% filter(Setup==s)
+  
+  p=ggplot(data=filtered, aes_string(x='Dataset',y=targetVar,color='Language',fill='Language')) + 
+    geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape=outliersShape) +
+    scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))) +
+    #facet_grid(Type~Setup,scales='free',switch='y',labeller=label_wrap_gen(width=10))
+    facet_wrap(~Type  ,labeller=label_wrap_gen(width=100)) +
+    ggtitle(paste0('Comparing Datasets - ',s))
+  
+  plot(ggplot_colors(p,strip_angle=0))
+}
+
+
+
+```
+
+
+# Comparing Query Types
+
+As expected, the slowest queries are the Aggregate one,while the fastest ones are the Row  Operations.Scala outperform PySpark on the row operations, while we don't see a significant differnece on the other query types
+
+
+
+```{r fig.height=4, fig.width=8}
+
+filtered=merged_data  
+filtered$Type = forcats::fct_reorder(filtered$Type,filtered[[targetVar]],.fun=median,desc=F)
+p=ggplot(data=filtered, aes_string(x='Type',y=targetVar,color='Language',fill='Language')) + 
+  geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape=outliersShape)   +
+  scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))) +
+  facet_wrap(~Setup) +
+  #ggplot2::coord_cartesian(xlim=c(0,max(filtered[[targetVar]])*.5))+ 
+  ggplot2::coord_flip() 
+  
+ #facet_grid(Setup~Type)
+
+ggplot_colors(p,legend.position='bottom')  
+```
+
+
+
+# Comparing Queries
+
+## Comparing Row operations
+
+When analyzing the data by single query, we see that Scla outperfom Pyspark on specifi queries, like Running Sums and Shift. Other queries show a lower median for Scala, but not significant
+
+Scala looks more stable on the perfomacne among the Databricks environemnt
+```{r}
+#functions
+plot_operations = function(filtered,onlySignificant = T){
+  
+  filtered$Operation = forcats::fct_reorder(filtered$Operation,filtered[[targetVar]],.fun=median,desc=F)
+  
+  if(onlySignificant) {
+    
+    w<-function(oper){wilcox.test(as.formula(paste0(targetVar,' ~ Language '))
+                                  ,filtered,subset = Operation == oper)$p.value
+    }
+    ops = unique(filtered$Operation)
+    test=sapply(ops,w)
+    keep= ops[which(test < 0.05)]
+    data2 = filtered[filtered$Operation %in% keep,]
+    
+    if(nrow(data2)==0) {print("No Significant Elements") ; return()}
+  } else {
+    print("All Elements")
+    data2=filtered
+  }
+  data2$Operation = factor(data2$Operation)
+  p=  ggplot(data=data2, aes_string(x='Dataset',y=targetVar,color='Language',shape='Setup')) + 
+    ggplot2::stat_summary(aes(group=Language),fun.y=median,geom='line',size=.5 )+
+    geom_jitter(alpha=0.5,size=.5,width=0.1)+
+    facet_wrap(~Operation,scales='free',ncol=4,labeller = label_wrap_gen()) 
+  
+  #facet_grid(Operation~Setup,scales='free')
+  
+  ggplot_colors(p,legend.position = 'bottom')
+       
+}
+```
+
+
+```{r fig.height=5}
+
+filtered=merged_data %>% filter(Type=='Row Operation') 
+
+plot_operations(filtered,F)
+plot_operations(filtered,T)
+
+for(s in Setups) {
+  message(s)
+  plot(plot_operations(filter(filtered,Setup==s) ,onlySignificant = T))
+}
+
+
+```
+
+## Comparing Columns operations
+Column Operations shows that Databricks has wider variance than Local Machine
+The lenaguges have similar perfomance with few cases when Scala outperfom PySpakr (Full outer Join 5 Columns)
+
+```{r fig.height=11 }
+
+filtered=merged_data %>% filter(Type=='Column Operation'
+                                ,! Operation %in%  c('Full Outer Join 3 Columns'
+                                                      ,'Left Outer Join 3 Columns'
+                                                      ,'Inner Join 3 Columns')
+)
+
+plot_operations(filtered,onlySignificant = F)
+plot_operations(filtered,onlySignificant = T)
+message("Databricks")
+plot_operations(filter(filtered,Setup=='Databricks') ,onlySignificant = T)
+message("Local VM")
+plot_operations(filter(filtered,Setup=='Local VM') ,onlySignificant = T)
+
+
+    
+```
+
+
+## Comparing Aggregate operations
+Scala is faster than PySpark
+
+```{r fig.height=3, fig.width=7}
+
+filtered=merged_data %>% filter(Type=='Aggregate Operation')
+plot_operations(filtered,onlySignificant = F)
+plot_operations(filtered,onlySignificant = T)
+message("Databricks")
+plot_operations(filter(filtered,Setup=='Databricks') ,onlySignificant = T)
+message("Local VM")
+plot_operations(filter(filtered,Setup=='Local VM') ,onlySignificant = T)
+```
+
+
+## Comparing Mixed operations
+Scala is faster than PySpark
+
+```{r fig.height=3, fig.width=8}
+
+filtered=merged_data %>% filter(Type=='Mixed Operation')
+plot_operations(filtered,onlySignificant = F) #show everything
+plot_operations(filtered,onlySignificant = T)
+message("Databricks")
+plot_operations(filter(filtered,Setup=='Databricks') ,onlySignificant = F)
+message("Local VM")
+plot_operations(filter(filtered,Setup=='Local VM') ,onlySignificant = F)
+    
+```
+
+# Comparing Runs operations
+slight improvement with additonal runs (not statistically significant)
+
+```{r fig.height=3, fig.width=6}
+
+filtered=data_raw 
+filtered$Operation = forcats::fct_reorder(filtered$RunID,filtered[[targetVar]],.fun=median,desc=F)
+p=ggplot(data=filtered, aes_string(x='RunID',y=targetVar,fill='Language',color='Language')) + 
+  geom_boxplot(outlier.size = 0.5,size=0.5,alpha=0.6,outlier.shape = outliersShape)  +
+  scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))) 
+
+ggplot_colors(p)
+
+    
+```
+ 
+# PySpark vs. Scala
+
+## Row Operations
+
+```{r fig.height=160, fig.width=16}
+if (options == 1){
+  
+  filtered = merged_data %>%
+    filter(Type == "Row Operation") %>%
+    PySpark_vs_Scala(arOpt = 2)
+}
+```
+
+## Column Operations
+
+```{r fig.height=315, fig.width=16}
+if (options == 2){
+  filtered = merged_data %>%
+    filter(Type == "Column Operation") %>%
+    PySpark_vs_Scala(arOpt = 2)
+}
+```
+
+## Aggregare and MiColumn Operations
+
+```{r fig.height=140, fig.width=16}
+if (options == 3){
+  filtered = merged_data %>%
+    filter(Type == "Aggregate Operation") %>%
+    PySpark_vs_Scala(arOpt = 2)
+  
+  filtered = merged_data %>%
+    filter(Type == "Mixed Operation") %>%
+    PySpark_vs_Scala(arOpt = 2)
+}
+```
+
+```{r}
+
+```
