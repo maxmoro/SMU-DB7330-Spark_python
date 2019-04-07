@@ -31,7 +31,6 @@ library(htmltools)
 
 ```
 
-
 ```{r}
 options = params$options
 targetVar = params$targetVar
@@ -39,11 +38,8 @@ targetUnits = ifelse(targetVar=='Throughput','MB/s','secs')
 showOutliers = params$showOutliers
 outliersQuantile = ifelse(showOutliers, 1 ,0.90)  #use 1.0 to include all outliers
 outliersShape = ifelse(showOutliers,  19,NA)  
-
 ```
 
-
-# Reading Files
 
 ```{r}
 read.clean.files = function(filename){
@@ -58,7 +54,6 @@ files = list.files(path = "../Results/", pattern = ".csv$", recursive = TRUE, fu
 
 databricks.files = files[grepl("Databricks",files)]
 local.vm..files = files[grepl("Local_VM",files)]
-cluster.files = files[grepl("Cluster",files)]
 
 rows.databricks = lapply(databricks.files, read.csv, header = FALSE) # Read the files into list
 merged.databricks = do.call(rbind, rows.databricks) # combine the data.frame
@@ -68,12 +63,7 @@ rows.local.vm = lapply(local.vm..files, read.csv, header = FALSE) # Read the fil
 merged.local.vm = do.call(rbind, rows.local.vm) # combine the data.frame
 merged.local.vm$Setup = 'Local VM'
 
-rows.cluster = lapply(cluster.files, read.csv, header = FALSE) # Read the files into list
-merged.cluster = do.call(rbind, rows.cluster) # combine the data.frame
-merged.cluster$Setup = 'Cluster'
-
-
-merged_data = rbind(merged.databricks,merged.local.vm,merged.cluster)
+merged_data = rbind(merged.databricks,merged.local.vm)
 merged_data$Setup = as.factor(merged_data$Setup)
 
 column.names = c("Language","Randomize","Dataset","MachineID","RunID","Type","Operation","TimeTaken","Setup")
@@ -87,7 +77,7 @@ merged_data$RunID = as.factor(merged_data$RunID)
 
 merged_data$Dataset = sub("dataset_", "", merged_data$Dataset) 
 merged_data$Dataset = sub("MB$", "", merged_data$Dataset) 
-merged_data$Dataset = as.factor(merged_data$Dataset)
+merged_data$Dataset = forcats::fct_reorder(paste0(merged_data$Dataset,'MB'),as.numeric(merged_data$Dataset))
 
 merged_data$Operation = trimws(as.character(merged_data$Operation),'both')
 merged_data[merged_data$Operation =='Mathematical Operations on Columns',]$Operation ='Mathematical Operation on Columns'
@@ -107,7 +97,7 @@ print(paste("Actual Size of 200MB file (in MB)",size_200MB))
 print(paste("Actual Size of 300MB file (in MB)",size_300MB))
 print(paste("Actual Size of 500MB file (in MB)",size_500MB))
 
-size_info = data.frame(Dataset = c("10","100","200","300","500")
+size_info = data.frame(Dataset = c("10MB","100MB","200MB","300MB","500MB")
                        ,Size = c(size_10MB,size_100MB,size_200MB,size_300MB,size_500MB))
 str(size_info)
 
@@ -115,15 +105,12 @@ merged_data = merged_data %>%
   merge(size_info,by='Dataset') %>%
   mutate(Throughput = Size/TimeTaken)
 
-Setups = c(unique(as.character(merged_data$Setup)))
-
 ```
 
 ```{r}
 
 data_raw = merged_data
-merged_data = merged_data %>% 
-    filter(RunID != 1)
+#merged_data = merged_data %>%  filter(RunID != 1)
 
 str(merged_data)
 head(merged_data)
@@ -196,7 +183,7 @@ p=ggplot(data=filtered, aes_string(x='Setup',y=targetVar,color='Language',fill='
   scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))
                      ,labels=scales::comma_format(accuracy=1,suffix=targetUnits)) +
    facet_wrap(~Type,scales='free') 
-  ggplot_colors(p,axis.text.y=element_text(size=7),legend.position='right')
+  ggplot_colors(p,axis.text.y=element_text(size=7))
  
 ```
 
@@ -231,20 +218,19 @@ filtered= merged_data
 plotDataSize(filtered,'Comparing Datsets - All Environments')
 ```
 
-## By Setup
+## Databricks
 
 ```{r}
-for (s in Setups) {
-  message(s)
-  filtered= merged_data %>% filter(Setup==s)
-  plot(plotDataSize(filtered,paste0('Comparing Datsets - ',s)))
-
-}
-
-
-
+filtered= merged_data %>% filter(Setup=='Databricks')
+plotDataSize(filtered,'Comparing Datsets - Databrick (AWS)')
 ```
 
+## VM
+
+```{r}
+filtered= merged_data %>% dplyr::filter(Setup=='Local VM')
+plotDataSize(filtered,'Comparing Datsets - Local VM')
+```
 
 # Comparing Query Types
 
@@ -290,7 +276,7 @@ plot_get_significant = function(filtered){
     return(data2)
 }
 plot_operations_get = function(filtered,title=''){
-  if(is.null(filtered)) return(ggplot(data=filtered)+geom_blank())
+  if(is.null(filtered)) return()
   plotData = filtered %>%
     mutate(Operation = factor(Operation))
   p=  ggplot(data=plotData, aes_string(x='Dataset',y=targetVar,color='Language',shape='Setup')) + 
@@ -317,14 +303,11 @@ plot_operations = function(filtered,title){
 
 
 ```{r fig.height=5}
-title = 'Comparing Rows Operations'
+
 filtered=merged_data %>% filter(Type=='Row Operation') 
-plot_operations(filtered,title=paste0(title,' - Combined Environments'))
-for(s in Setups){
-  t=plot_operations(filtered=filter(filtered,Setup==s),title=paste0(title,' - ',s))
-  plot(t$All)
-  plot(t$Significant)
-}
+plot_operations(filtered,title='Combined Environments')
+plot_operations(filter(filtered,Setup=='Databricks'),title='Databricks')
+plot_operations(filter(filtered,Setup=='Local VM'),title='Local VM')
 
 ```
 
@@ -333,18 +316,15 @@ Column Operations shows that Databricks has wider variance than Local Machine
 The lenaguges have similar perfomance with few cases when Scala outperfom PySpakr (Full outer Join 5 Columns)
 
 ```{r fig.height=8 }
-title = 'Comparing Columns Operations'
+
 filtered=merged_data %>% filter(Type=='Column Operation'
                                 ,! Operation %in%  c('Full Outer Join 3 Columns'
                                                       ,'Left Outer Join 3 Columns'
                                                       ,'Inner Join 3 Columns')
 )
-plot_operations(filtered,title=paste0(title,' - Combined Environments'))
-for(s in Setups){
-  t=plot_operations(filtered=filter(filtered,Setup==s),title=paste0(title,' - ',s))
-  plot(t$All)
-  plot(t$Significant)
-}
+plot_operations(filtered,title='Combined Environments')
+plot_operations(filter(filtered,Setup=='Databricks'),title='Databricks')
+plot_operations(filter(filtered,Setup=='Local VM'),title='Local VM')
 ```
 
 
@@ -353,14 +333,11 @@ for(s in Setups){
 Scala is faster than PySpark
 
 ```{r fig.height=3, fig.width=9}
-title = 'Comparing Aggregate Operations'
+
 filtered=merged_data %>% filter(Type=='Aggregate Operation')
-plot_operations(filtered,title=paste0(title,' - Combined Environments'))
-for(s in Setups){
-  t=plot_operations(filtered=filter(filtered,Setup==s),title=paste0(title,' - ',s))
-  plot(t$All)
-  plot(t$Significant)
-}
+plot_operations(filtered,title='Combined Environments')
+plot_operations(filter(filtered,Setup=='Databricks'),title='Databricks')
+plot_operations(filter(filtered,Setup=='Local VM'),title='Local VM')
 
 
 ```
@@ -370,14 +347,11 @@ for(s in Setups){
 Scala is faster than PySpark
 
 ```{r fig.height=3, fig.width=8}
-title = 'Comparing Mixed Operations'
+
 filtered=merged_data %>% filter(Type=='Mixed Operation')
-plot_operations(filtered,title=paste0(title,' - Combined Environments'))
-for(s in Setups){
-  t=plot_operations(filtered=filter(filtered,Setup==s),title=paste0(title,' - ',s))
-  plot(t$All)
-  plot(t$Significant)
-}
+plot_operations(filtered,title='Combined Environments')
+plot_operations(filter(filtered,Setup=='Databricks'),title='Databricks')
+plot_operations(filter(filtered,Setup=='Local VM'),title='Local VM')
 
 ```
 
@@ -392,18 +366,7 @@ p=ggplot(data=filtered, aes_string(x='RunID',y=targetVar,fill='Language',color='
   geom_boxplot(outlier.size = 0.5,size=0.5,alpha=0.6,outlier.shape = outliersShape)  +
   scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))
                      ,labels=scales::comma_format(accuracy=1,suffix=targetUnits)) 
-ggplot_colors(p)
-```
 
-## By Setup
-
-```{r fig.height=6, fig.width=6}
-
-p=ggplot(data=filtered, aes_string(x='RunID',y=targetVar,fill='Language',color='Language')) + 
-  geom_boxplot(outlier.size = 0.5,size=0.5,alpha=0.6,outlier.shape = outliersShape)  +
-  scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))
-                     ,labels=scales::comma_format(accuracy=1,suffix=targetUnits))  +
-  facet_wrap(~Setup,ncol=1)
 ggplot_colors(p)
 
     
