@@ -184,6 +184,7 @@ ggplot_colors = function(plot,strip_angle=0,...){
   scale_fill_manual(values=c("#f4a582","#92c5de"),breaks=c('PySpark','Scala'))+
     theme_light() +
     ggplot2::theme(strip.text.y=element_text(angle=strip_angle)
+                   ,strip.background = element_rect(fill='#636363')
                    ,...)
   }
 
@@ -317,7 +318,7 @@ plot_operations_get = function(filtered,title='',subtitle='',ncol = plotCols){
   ggplot_colors(p,legend.position = 'bottom'
                 ,axis.text.x=element_text(size=8,angle=45,hjust=1)
                 ,axis.text.y=element_text(size=8)
-                ,strip.background = element_rect(fill='#636363')
+                #,strip.background = element_rect(fill='#636363')
                 )
        
 }
