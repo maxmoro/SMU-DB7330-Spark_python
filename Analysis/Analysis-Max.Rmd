@@ -354,7 +354,7 @@ plot_environments = function(filtered,title,ncol=plotCols){
   for (st in sort(unique(filtered$subType))){
     data=filter(filtered,subType==st)
     p=plot_operations_get(data,title=paste0(title,' - ' , st),subtitle=' (All Operations) ',ncol=ncol,facets='Setup')
-    subchunkify(p, fig_height=ceiling(n_distinct(data$Setup)/ncol)*2.5+.5, fig_width=ncol*3) 
+    subchunkify(p, fig_height=ceiling(n_distinct(data$Setup)/ncol)*2.7+.5, fig_width=ncol*3) 
     
   }
 }
@@ -378,21 +378,22 @@ print(htmltools::h4(paste0(title,' - All Environments: ')))
 filtered=merged_data %>% filter(Type=='Row Operation') 
 print(getTable(filtered))
 plot_operations(filtered,title=paste0(title,' - All Environments'),ncol=plotCols)
-plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
 
 for(s in Setups) {
   print(htmltools::h4(paste0(title,' - Setup: ',s)))
   print(getTable(filter(filtered,Setup==s)))
   plot_operations(filtered=filter(filtered,Setup==s),title=paste0(title,' - ',s))
 } 
-
-
-
 ```
 
+### by Environment
+
+```{r echo=FALSE, results='asis'}
+plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
+```
+
+
 ## Comparing Columns operations
-
-
 
 ```{r echo=FALSE, results='asis'}
 title = 'Columns Operations'
@@ -404,7 +405,6 @@ filtered=merged_data %>% filter(Type=='Column Operation'
 )
 print(getTable(filtered))
 plot_operations(filtered,title=paste0(title,' - All Environments'))
-plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
 for(s in Setups) {
   print(htmltools::h4(paste0(title,' - Setup:',s)))
   print(getTable(filter(filtered,Setup==s)))
@@ -412,6 +412,11 @@ for(s in Setups) {
 } 
 ```
 
+### by Environment
+
+```{r echo=FALSE, results='asis'}
+plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
+```
 
 
 ## Comparing Aggregate operations
@@ -423,12 +428,17 @@ print(htmltools::h4(paste0(title,' - All Environments: ')))
 filtered=merged_data %>% filter(Type=='Aggregate Operation')
 print(getTable(filtered))
 plot_operations(filtered,title=paste0(title,' - All Environments'))
-plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
 for(s in Setups) {
   print(htmltools::h4(paste0(title,' - Setup: ',s)))
   print(getTable(filter(filtered,Setup==s)))
   plot_operations(filtered=filter(filtered,Setup==s),title=paste0(title,' - ',s))
 } 
+```
+
+### by Environment
+
+```{r echo=FALSE, results='asis'}
+plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
 ```
 
 
@@ -441,13 +451,20 @@ print(htmltools::h4(paste0(title,' - All Environments: ')))
 filtered=merged_data %>% filter(Type=='Mixed Operation')
 print(getTable(filtered))
 plot_operations(filtered,title=paste0(title,' - All Environments'))
-plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
 for(s in Setups) {
   print(htmltools::h4(paste0(title,' - Setup: ',s)))
   print(getTable(filter(filtered,Setup==s)))
   plot_operations(filtered=filter(filtered,Setup==s),title=paste0(title,' - ',s))
 } 
 ```
+
+### by Environment
+
+```{r echo=FALSE, results='asis'}
+plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
+```
+
+
 
 # Comparing Runs operations
 slight improvement with additonal runs (not statistically significant)
