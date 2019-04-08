@@ -300,24 +300,9 @@ plot_get_significant = function(filtered){
     if(nrow(data2)==0) {message("No Significant Elements") ; return(NULL)}
     return(data2)
 }
-plot_operations_get = function(filtered,title='',subtitle='',ncol = plotCols){
-  if(is.null(filtered)) return(ggplot(data=filtered)+geom_blank())
-  plotData = filtered %>% mutate(Operation = factor(Operation))
-  p=  ggplot(data=plotData, aes_string(x='Dataset',y=targetVar,color='Language')) + 
-    ggplot2::stat_summary(aes(group=Language),fun.y=median,geom='line',size=.5 )+
-    geom_jitter(alpha=0.5,size=.5,width=0.1)+
-    scale_y_continuous(labels=scales::comma_format(accuracy=1,suffix=targetUnits)) +
-    facet_wrap(~ Operation,scales='free',ncol=ncol,labeller = label_wrap_gen(width = round(100/ncol))) +
-    #facet_grid(Operation~subType,scales='free',labeller = label_wrap_gen()) +
-    ggplot2::ggtitle(title,subtitle=subtitle)
-  
-  ggplot_colors(p,legend.position = 'bottom'
-                ,axis.text.x=element_text(size=8,angle=45,hjust=1)
-                ,axis.text.y=element_text(size=8)
-                #,strip.background = element_rect(fill='#636363')
-                )
-}
-plot_operations_get = function(filtered,title='',subtitle='',ncol = plotCols,facets='Operation'){
+
+plot_operations_get = function(filtered,title='',subtitle=''
+                               ,ncol = plotCols,facets='Operation',legendpos='right'){
   if(is.null(filtered)) return(ggplot(data=filtered)+geom_blank())
   plotData = filtered %>% mutate(Operation = factor(Operation))
   p=  ggplot(data=plotData, aes_string(x='Dataset',y=targetVar,color='Language')) + 
@@ -328,17 +313,17 @@ plot_operations_get = function(filtered,title='',subtitle='',ncol = plotCols,fac
     #facet_grid(Operation~subType,scales='free',labeller = label_wrap_gen()) +
     ggplot2::ggtitle(title,subtitle=subtitle)
   
-  ggplot_colors(p,legend.position = 'bottom'
+  ggplot_colors(p,legend.position = legendpos
                 ,axis.text.x=element_text(size=8,angle=45,hjust=1)
                 ,axis.text.y=element_text(size=8)
                 #,strip.background = element_rect(fill='#636363')
                 )
 }
-plot_operations = function(filtered,title,ncol=plotCols){
+plot_operations = function(filtered,title,ncol=plotCols,legendpos='right'){
   
   for (st in sort(unique(filtered$subType))){
     data=filter(filtered,subType==st)
-    p=plot_operations_get(data,title=paste0(title,' - ' , st),subtitle=' (All Operations) ',ncol=ncol)
+    p=plot_operations_get(data,title=paste0(title,' - ' , st),subtitle=' (All Operations) ',ncol=ncol,legendpos=legendpos)
     subchunkify(p, fig_height=ceiling(n_distinct(data$Operation)/ncol)*2.5+.5, fig_width=plotCols*3) 
     
     data=plot_get_significant(filter(filtered,subType==st))
@@ -349,13 +334,13 @@ plot_operations = function(filtered,title,ncol=plotCols){
   }
 }
 
-plot_environments = function(filtered,title,ncol=plotCols){
-  
+plot_environments = function(filtered,title,ncol=plotCols,legendpos='bottom'){
   for (st in sort(unique(filtered$subType))){
     data=filter(filtered,subType==st)
-    p=plot_operations_get(data,title=paste0(title,' - ' , st),subtitle=' (All Operations) ',ncol=ncol,facets='Setup')
+    p=plot_operations_get(data,title=paste0(title,' - ' , st)
+                          ,subtitle=' (All Operations) ',ncol=ncol,facets='Setup'
+                          ,legendpos=legendpos)
     subchunkify(p, fig_height=ceiling(n_distinct(data$Setup)/ncol)*2.7+.5, fig_width=ncol*3) 
-    
   }
 }
 getTable = function(data){
