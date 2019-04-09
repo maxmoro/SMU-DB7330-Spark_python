@@ -316,19 +316,19 @@ plot_operations_get = function(filtered,title='',subtitle=''
   ggplot_colors(p,legend.position = legendpos
                 ,axis.text.x=element_text(size=8,angle=45,hjust=1)
                 ,axis.text.y=element_text(size=8)
-                #,strip.background = element_rect(fill='#636363')
                 )
 }
 plot_operations = function(filtered,title,ncol=plotCols,legendpos='right'){
-  
   for (st in sort(unique(filtered$subType))){
     data=filter(filtered,subType==st)
-    p=plot_operations_get(data,title=paste0(title,' - ' , st),subtitle=' (All Operations) ',ncol=ncol,legendpos=legendpos)
+    p=plot_operations_get(data,title=paste0(title,' - ' , st)
+                          ,subtitle=' (All Operations) ',ncol=ncol,legendpos=legendpos)
     subchunkify(p, fig_height=ceiling(n_distinct(data$Operation)/ncol)*2.5+.5, fig_width=plotCols*3) 
     
     data=plot_get_significant(filter(filtered,subType==st))
     if(!is.null(data))  {
-      p=plot_operations_get(data,title=paste0(title,' - ' , st ),subtitle=' (Significant Operations) ',ncol=ncol)
+      p=plot_operations_get(data,title=paste0(title,' - ' , st )
+                            ,subtitle=' (Significant Operations) ',ncol=ncol)
       subchunkify(p, fig_height=ceiling(n_distinct(data$Operation)/ncol)*2.5+.5, fig_width=ncol*3) 
     }
   }
