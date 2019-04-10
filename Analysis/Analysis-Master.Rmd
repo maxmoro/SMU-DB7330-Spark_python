@@ -211,7 +211,7 @@ p=ggplot(data=filtered, aes_string(x='Setup',y=targetVar,color='Language',fill='
     geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape = outliersShape) +
   scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))
                      ,labels=scales::comma_format(accuracy=1,suffix=targetUnits)) +
-   facet_wrap(~Type,scales='free',ncol=plotCols) 
+  facet_wrap(~Type,scales='free',ncol=plotCols) 
   ggplot_colors(p,axis.text.y=element_text(size=7),legend.position='right')
  
 ```
@@ -229,6 +229,7 @@ plotDataSize=function(filtered,title){
      geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape=outliersShape) +
      scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))
                         ,labels=scales::comma_format(accuracy=1,suffix=targetUnits)) +
+     scale_x_discrete(labels=function(x){paste0(x,"MB")}) +
      facet_wrap(~Type ,labeller=label_wrap_gen(width=100),scales='free_x',ncol=plotCols)  +
      ggplot2::ggtitle(title)
    
@@ -309,6 +310,7 @@ plot_operations_get = function(filtered,title='',subtitle=''
     ggplot2::stat_summary(aes(group=Language),fun.y=median,geom='line',size=.5 )+
     geom_jitter(alpha=0.5,size=.5,width=0.1)+
     scale_y_continuous(labels=scales::comma_format(accuracy=1,suffix=targetUnits)) +
+    scale_x_discrete(labels=function(x){paste0(x,"MB")}) +
     facet_wrap(facets,scales='free',ncol=ncol,labeller = label_wrap_gen(width = round(100/ncol))) +
     #facet_grid(Operation~subType,scales='free',labeller = label_wrap_gen()) +
     ggplot2::ggtitle(title,subtitle=subtitle)
@@ -351,7 +353,15 @@ getTable = function(data){
       mutate(delta = Scala/PySpark)
     knitr::kable(t,digits=2,col.names=c('Category','Operation','PySpark (MB/sec)','Scala (MB/sec)','Scala/PySpark'),padding=0,format='markdown')
 }
-
+# 
+#   t=data %>% group_by(Type,subType,Language) %>%
+#       summarise_at(.vars=targetVar,.funs=vars(mean)) %>%
+#       ungroup() %>%
+#       spread(key=Language,value=targetVar) %>%
+#       mutate(delta = Scala/PySpark)
+#     knitr::kable(t,digits=2,col.names=c('Type','subType','PySpark (MB/sec)','Scala (MB/sec)','Scala/PySpark'),padding=0,format='markdown')
+#     ggplot2::ggplot(data=t,aes())
+    
 ```
 
 ## Comparing Row operations
@@ -399,7 +409,7 @@ for(s in Setups) {
 
 ### by Environment
 
-```{r echo=FALSE, results='asis'}
+```{r echo=FALSE, fig.height=3, fig.width=9, results='asis'}
 plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
 ```
 
