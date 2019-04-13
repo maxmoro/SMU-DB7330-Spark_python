@@ -303,19 +303,21 @@ plot_get_significant = function(filtered){
 }
 
 plot_operations_get = function(filtered,title='',subtitle=''
-                               ,ncol = plotCols,facets='Operation',legendpos='right'){
+                               ,ncol = plotCols,facets='Operation',facet_col='',legendpos='right'){
   if(is.null(filtered)) return(ggplot(data=filtered)+geom_blank())
   plotData = filtered %>% mutate(Operation = factor(Operation))
   p=  ggplot(data=plotData, aes_string(x='Dataset',y=targetVar,color='Language')) + 
     ggplot2::stat_summary(aes(group=Language),fun.y=median,geom='line',size=.5 )+
     geom_jitter(alpha=0.5,size=.5,width=0.1)+
     scale_y_continuous(labels=scales::comma_format(accuracy=1,suffix=targetUnits)) +
-    scale_x_discrete(labels=function(x){paste0(x,"MB")}) +
-    facet_wrap(facets,scales='free',ncol=ncol,labeller = label_wrap_gen(width = round(100/ncol))) +
-    #facet_grid(Operation~subType,scales='free',labeller = label_wrap_gen()) +
-    ggplot2::ggtitle(title,subtitle=subtitle)
+    scale_x_discrete(labels=function(x){paste0(x,"MB")}) 
+  if (facet_col == '') p=p+facet_wrap(facets,scales='free',ncol=ncol,labeller = label_wrap_gen(width = round(100/ncol))) 
+  if (facet_col != '') p=p+facet_grid(rows=as.formula(paste0(facets,'~',facet_col)),switch='y',space='free_y'
+                                      ,scales='free',labeller = label_wrap_gen(width = round(100/ncol))) 
+    p=p+    ggplot2::ggtitle(title,subtitle=subtitle)
   
   ggplot_colors(p,legend.position = legendpos
+                ,strip_angle = ifelse(facet_col=='',0,270)
                 ,axis.text.x=element_text(size=8,angle=45,hjust=1)
                 ,axis.text.y=element_text(size=8)
                 )
@@ -345,13 +347,39 @@ plot_environments = function(filtered,title,ncol=plotCols,legendpos='bottom'){
     subchunkify(p, fig_height=ceiling(n_distinct(data$Setup)/ncol)*2.7+.5, fig_width=ncol*3) 
   }
 }
+
+
+plot_environments_multi = function(filtered,title,ncol=plotCols,legendpos='bottom',ngroups=1){
+  subTypes = sort(unique(filtered$subType))
+  for (id in seq(from=1, to=length(subTypes),by=ngroups)) {
+    st=subTypes[id:(id+ngroups-1)]
+    st=st[!is.na(st)]
+    ncol2=length(st)
+    data=filter(filtered,subType %in% st)
+    if(ncol2==1) {plot_environments(filtered=data,paste0(title ,' - ',st),ncol=2,legendpos)
+      } else {
+    
+    p=plot_operations_get(data,title=paste0(title,' - ',paste0(st,collapse='-'))
+                          ,subtitle=' (All Operations) ',ncol=ncol2,facets='Setup'
+                          ,legendpos=legendpos
+                          ,facet_col='subType'
+                          )
+    subchunkify(p, fig_height=ceiling(n_distinct(data$Setup)/ncol)*2.7+.5, fig_width=ncol2*3)
+    } 
+  }
+}
+
+
+
+
 getTable = function(data){
     t=data %>% group_by(subType,Operation,Language) %>%
       summarise_at(.vars=targetVar,.funs=vars(mean)) %>%
       ungroup() %>%
       spread(key=Language,value=targetVar) %>%
       mutate(delta = Scala/PySpark)
-    knitr::kable(t,digits=2,col.names=c('Category','Operation','PySpark (MB/sec)','Scala (MB/sec)','Scala/PySpark'),padding=0,format='markdown')
+    knitr::kable(t,digits=2,col.names=c('Category','Operation','PySpark (MB/sec)','Scala (MB/sec)'
+                                        ,'Scala/PySpark'),padding=0,format='markdown')
 }
 # 
 #   t=data %>% group_by(Type,subType,Language) %>%
@@ -361,6 +389,7 @@ getTable = function(data){
 #       mutate(delta = Scala/PySpark)
 #     knitr::kable(t,digits=2,col.names=c('Type','subType','PySpark (MB/sec)','Scala (MB/sec)','Scala/PySpark'),padding=0,format='markdown')
 #     ggplot2::ggplot(data=t,aes())
+   
     
 ```
 
@@ -384,7 +413,14 @@ for(s in Setups) {
 ### by Environment
 
 ```{r echo=FALSE, results='asis'}
-plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
+plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=1)
+
+plot_environments_multi(filtered,title=paste0(title),ncol=1,ngroups=2)
+```
+### by Environment Vertical
+
+```{r echo=FALSE, results='asis'}
+plot_environments_multi(filtered,title=paste0(title),ncol=1,ngroups=2)
 ```
 
 
@@ -413,6 +449,15 @@ for(s in Setups) {
 plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
 ```
 
+### by Environment Vertical
+
+```{r echo=FALSE, results='asis'}
+plot_environments_multi(filter(filtered,subType!='Mathematics'),title=paste0(title),ncol=1,ngroups=2)
+plot_environments_multi(filter(filtered,subType=='Mathematics'),title=paste0(title),ncol=1,ngroups=1)
+
+
+```
+
 
 ## Comparing Aggregate operations
 Scala is faster than PySpark
@@ -434,6 +479,12 @@ for(s in Setups) {
 
 ```{r echo=FALSE, results='asis'}
 plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
+```
+
+### by Environment Vertical
+
+```{r echo=FALSE, results='asis'}
+plot_environments_multi(filtered,title=paste0(title),ncol=1,ngroups=2)
 ```
 
 
@@ -459,6 +510,11 @@ for(s in Setups) {
 plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
 ```
 
+### by Environment Vertical
+
+```{r echo=FALSE, results='asis'}
+plot_environments_multi(filtered,title=paste0(title),ncol=1,ngroups=2)
+```
 
 
 # Comparing Runs operations
