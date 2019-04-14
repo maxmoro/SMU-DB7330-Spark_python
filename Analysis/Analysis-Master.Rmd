@@ -200,14 +200,27 @@ summary(model)
 
 # Comparing of Environments
 
-Comparing Local VM vs. Cloud similar in configuration, controlling by the type operation.  The cloud machine is optimized for Scala and Spark, while the local machine has a standard installation of the softwars. 
-
-We notice  the DataBricks environment benefit the aggregate operation, and that Databricks beenfits the scala encironemtn for the Row Operations.
-Anyway, other sitation shows a similar perfomance across lancuages and environment
 
 ```{r}
 filtered= merged_data 
 p=ggplot(data=filtered, aes_string(x='Setup',y=targetVar,color='Language',fill='Language')) + 
+    geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape = outliersShape) +
+  scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))
+                     ,labels=scales::comma_format(accuracy=1,suffix=targetUnits)) +
+  facet_wrap(~Type,scales='free',ncol=plotCols) 
+  ggplot_colors(p,axis.text.y=element_text(size=7),legend.position='right')
+ 
+```
+
+
+# Comparing of Machines
+
+Not praticall sgnificance (the differnece is mainly from Pyspark + Databricsk, but not more than 5MB/second)
+
+```{r}
+filtered= filter(merged_data,RunID != '1', Setup!='Cluster')
+wilcox.test(Throughput~MachineID,alternative='two.sided' ,data = filtered)
+p=ggplot(data=filtered, aes_string(x='MachineID',y=targetVar)) + 
     geom_boxplot(outlier.size = 0.1,size=0.1,outlier.shape = outliersShape) +
   scale_y_continuous(limits = c(0, quantile(filtered[[targetVar]],probs=outliersQuantile))
                      ,labels=scales::comma_format(accuracy=1,suffix=targetUnits)) +
@@ -261,6 +274,22 @@ for (s in Setups) {
 
 
 ```
+
+## Table 
+
+```{r}
+t= merged_data %>%
+  group_by(Setup,Type,subType,Dataset, Language) %>%
+  summarise(median=median(Throughput)) %>%
+  spread(Language,median) %>%
+  mutate(ratio =  Scala/PySpark) %>% 
+  select(-PySpark,-Scala)  %>%
+  spread(Dataset,ratio)
+
+ knitr::kable(t,digits=2,padding=0,format='markdown')
+
+```
+
 
 
 # Comparing Query Types
@@ -370,8 +399,6 @@ plot_environments_multi = function(filtered,title,ncol=plotCols,legendpos='botto
 }
 
 
-
-
 getTable = function(data){
     t=data %>% group_by(subType,Operation,Language) %>%
       summarise_at(.vars=targetVar,.funs=vars(mean)) %>%
@@ -381,14 +408,6 @@ getTable = function(data){
     knitr::kable(t,digits=2,col.names=c('Category','Operation','PySpark (MB/sec)','Scala (MB/sec)'
                                         ,'Scala/PySpark'),padding=0,format='markdown')
 }
-# 
-#   t=data %>% group_by(Type,subType,Language) %>%
-#       summarise_at(.vars=targetVar,.funs=vars(mean)) %>%
-#       ungroup() %>%
-#       spread(key=Language,value=targetVar) %>%
-#       mutate(delta = Scala/PySpark)
-#     knitr::kable(t,digits=2,col.names=c('Type','subType','PySpark (MB/sec)','Scala (MB/sec)','Scala/PySpark'),padding=0,format='markdown')
-#     ggplot2::ggplot(data=t,aes())
    
     
 ```
@@ -420,7 +439,14 @@ plot_environments_multi(filtered,title=paste0(title),ncol=1,ngroups=2)
 ### by Environment Vertical
 
 ```{r echo=FALSE, results='asis'}
-plot_environments_multi(filtered,title=paste0(title),ncol=1,ngroups=2)
+plot_environments_multi(filter(filtered
+                               ,subType %in% c('Run/Shift','Writing'))
+                        ,title=paste0(title),ncol=1,ngroups=2)
+
+plot_environments_multi(filter(filtered
+                               ,subType %in% c('Filtering'))
+                        ,title=paste0(title),ncol=1,ngroups=2)
+
 ```
 
 
@@ -452,8 +478,17 @@ plot_environments(filtered,title=paste0(title,' - By Environment'),ncol=3)
 ### by Environment Vertical
 
 ```{r echo=FALSE, results='asis'}
-plot_environments_multi(filter(filtered,subType!='Mathematics'),title=paste0(title),ncol=1,ngroups=2)
-plot_environments_multi(filter(filtered,subType=='Mathematics'),title=paste0(title),ncol=1,ngroups=1)
+plot_environments_multi(filter(filtered
+                               ,subType %in% c('Merging','Splitting'))
+                        ,title=paste0(title),ncol=1,ngroups=2)
+
+plot_environments_multi(filter(filtered
+                               ,subType %in% c('Sorting','Joining'))
+                        ,title=paste0(title),ncol=1,ngroups=2)
+
+plot_environments_multi(filter(filtered
+                               ,subType %in% c('Mathematics'))
+                        ,title=paste0(title),ncol=1,ngroups=2)
 
 
 ```
@@ -542,4 +577,6 @@ ggplot_colors(p)
 
     
 ```
+
+
  
